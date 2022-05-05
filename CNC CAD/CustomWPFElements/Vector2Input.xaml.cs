@@ -1,4 +1,6 @@
+using System;
 using System.Numerics;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace CNC_CAD.CustomWPFElements
@@ -8,6 +10,31 @@ namespace CNC_CAD.CustomWPFElements
         public Vector2Input()
         {
             InitializeComponent();
+            Panel.Orientation = _orientation;
+            GroupBox.Header = _header;
+        }
+        private Orientation _orientation;
+
+        public Orientation Orientation
+        {
+            get => _orientation;
+            set
+            {
+                _orientation = value;
+                Panel.Orientation = _orientation;
+            }
+        }
+
+        private string _header;
+
+        public string Header
+        {
+            get => _header;
+            set
+            {
+                _header = value;
+                GroupBox.Header = _header;
+            }
         }
 
         public Vector2 Value
@@ -23,11 +50,6 @@ namespace CNC_CAD.CustomWPFElements
                     X = x, Y = y
                 };
             }
-        }
-
-        public void SetOrientation(Orientation orientation)
-        {
-            Panel.Orientation = orientation;
         }
     }
 }

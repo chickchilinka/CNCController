@@ -7,7 +7,8 @@
              mc:Ignorable="d"
              d:DesignHeight="auto" d:DesignWidth="auto">
     <Grid>
-        <StackPanel x:Name="Panel" Orientation="Horizontal" Margin="0 0 5 0">
+        <GroupBox x:Name = "GroupBox" Header="SomeHeader"> 
+        <StackPanel x:Name="Panel" Orientation="Horizontal" Margin="0 0 5 5">
         <Label x:Name="X"
                VerticalAlignment="Center"
         >x:</Label>
@@ -24,5 +25,6 @@
                  Width="100">
         </TextBox>
         </StackPanel>
+        </GroupBox>
     </Grid>
 </UserControl>

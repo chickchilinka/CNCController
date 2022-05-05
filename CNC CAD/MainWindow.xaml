@@ -13,13 +13,13 @@
             <RowDefinition/>  
         </Grid.RowDefinitions>    
         <Ribbon x:Name="MainRibbon">
-            <RibbonTab x:Name="MainTab" Header="Main">
-                
-            </RibbonTab>
+            <!-- <RibbonTab x:Name="MainTab" Header="Main"> -->
+            <!--      -->
+            <!-- </RibbonTab> -->
             <RibbonTab x:Name="ModelingTab" Header="Modeling">
                 <RibbonGroup x:Name="PrimitivesGroup" Header="Primitives">  
                     <RibbonMenuButton Label="Arc">
-                        <RibbonMenuItem Header="3 points"> </RibbonMenuItem>  
+                        <RibbonMenuItem Header="3 points" Click="ButtonCreateArc3Points_OnClick"> </RibbonMenuItem>  
                         <RibbonMenuItem Header="Start, center, end" KeyTip="T"/>  
                         <RibbonMenuItem Header="Center, radius, angle" KeyTip="S"/>  
                     </RibbonMenuButton>  
@@ -28,7 +28,7 @@
                 </RibbonGroup>  
             </RibbonTab>
             <RibbonTab x:Name="MachineTab" Header="Machine">
-                <customWpfElements:Vector2Input></customWpfElements:Vector2Input>
+               
             </RibbonTab>
         </Ribbon>
         
