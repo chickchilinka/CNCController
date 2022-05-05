@@ -1,0 +1,36 @@
+﻿<Window x:Class="CNC_CAD.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CNC_CAD"
+        xmlns:customWpfElements="clr-namespace:CNC_CAD.CustomWPFElements"
+        mc:Ignorable="d"
+        Title="MainWindow" WindowState="Maximized" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>  
+            <RowDefinition Height="Auto"/>  
+            <RowDefinition/>  
+        </Grid.RowDefinitions>    
+        <Ribbon x:Name="MainRibbon">
+            <RibbonTab x:Name="MainTab" Header="Main">
+                
+            </RibbonTab>
+            <RibbonTab x:Name="ModelingTab" Header="Modeling">
+                <RibbonGroup x:Name="PrimitivesGroup" Header="Primitives">  
+                    <RibbonMenuButton Label="Arc">
+                        <RibbonMenuItem Header="3 points"> </RibbonMenuItem>  
+                        <RibbonMenuItem Header="Start, center, end" KeyTip="T"/>  
+                        <RibbonMenuItem Header="Center, radius, angle" KeyTip="S"/>  
+                    </RibbonMenuButton>  
+                    <RibbonButton Label="Box"/>  
+                    <RibbonButton Label="Line"/>  
+                </RibbonGroup>  
+            </RibbonTab>
+            <RibbonTab x:Name="MachineTab" Header="Machine">
+                <customWpfElements:Vector2Input></customWpfElements:Vector2Input>
+            </RibbonTab>
+        </Ribbon>
+        
+    </Grid>
+</Window>

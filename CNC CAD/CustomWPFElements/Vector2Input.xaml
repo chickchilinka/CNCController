@@ -1,0 +1,28 @@
+<UserControl x:Class="CNC_CAD.CustomWPFElements.Vector2Input"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:CNC_CAD.CustomWPFElements"
+             mc:Ignorable="d"
+             d:DesignHeight="auto" d:DesignWidth="auto">
+    <Grid>
+        <StackPanel x:Name="Panel" Orientation="Horizontal" Margin="0 0 5 0">
+        <Label x:Name="X"
+               VerticalAlignment="Center"
+        >x:</Label>
+        <TextBox x:Name="XBox" 
+                 HorizontalAlignment = "Left"
+                 Height="20" 
+                 Width="100"></TextBox>
+        <Label x:Name="Y"
+               VerticalAlignment="Center"
+        >y:</Label>
+        <TextBox x:Name="YBox" 
+                 HorizontalAlignment = "Left"
+                 Height="20" 
+                 Width="100">
+        </TextBox>
+        </StackPanel>
+    </Grid>
+</UserControl>
