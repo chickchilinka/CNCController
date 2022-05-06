@@ -4,10 +4,14 @@ using CNC_CAD.CNC.Controllers;
 
 namespace CNC_CAD.GCode
 {
-    public class GCodeAbsoluteBuilder2D:GCodeBuilder2D
+    /// <summary>
+    /// Билдер команд для рисование линий с абсолютными координатами 
+    /// </summary>
+    public class GCodeAbsoluteBuilder2D : GCodeBuilder2D
     {
         private readonly Vector2 _position;
-        public GCodeAbsoluteBuilder2D(CNCConfig config, Vector2 positionToMove):base(config)
+
+        public GCodeAbsoluteBuilder2D(CNCConfig config, Vector2 positionToMove) : base(config)
         {
             _position = positionToMove;
         }
@@ -19,6 +23,7 @@ namespace CNC_CAD.GCode
             {
                 commandsSequence.Add($"G0 {Config.AxisZ}{HeadPositionAtStart}");
             }
+
             commandsSequence.Add($"G0 {Config.AxisX}{_position.X}{Config.AxisY}{_position.Y}");
             if (HeadPositionAtEnd != null)
             {

@@ -19,13 +19,15 @@ namespace CNC_CAD.GCode
             return new GCodeAbsoluteBuilder2D(config, position);
         }
 
-        public void SetHeadPositionAtStart(float position)
+        public GCodeBuilder2D SetHeadPositionAtStart(float position)
         {
             HeadPositionAtStart = position;
+            return this;
         }
-        public void SetHeadPositionAtEnd(float position)
+        public GCodeBuilder2D SetHeadPositionAtEnd(float position)
         {
             HeadPositionAtEnd = position;
+            return this;
         }
 
         public abstract GCodeCommand Build();

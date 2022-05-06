@@ -62,9 +62,16 @@ namespace CNC_CAD.DrawShapeWindows
             return this;
         }
 
-        public MakeShapeWindowBuilder AddSimpleField(string fieldName)
+        public MakeShapeWindowBuilder AddSimpleFloatField(string fieldName, double width = 100)
         {
-            //TODO:Create field
+            var control = new GenericField<float>()
+            {
+                FieldName = fieldName,
+                InputWidth = width,
+                Margin = _margin,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            _controlsToAdd.Add(control);
             return this;
         }
 

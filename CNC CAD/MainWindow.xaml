@@ -12,11 +12,14 @@
             <RowDefinition Height="Auto"/>  
             <RowDefinition/>  
         </Grid.RowDefinitions>    
-        <Ribbon x:Name="MainRibbon">
+        <Ribbon x:Name="MainRibbon" >
             <!-- <RibbonTab x:Name="MainTab" Header="Main"> -->
             <!--      -->
             <!-- </RibbonTab> -->
             <RibbonTab x:Name="ModelingTab" Header="Modeling">
+                <RibbonGroup x:Name="Import" Header="Import">  
+                    <RibbonButton x:Name="ImportSvg" Label="SVG" Click="ImportSvg_OnClick" />  
+                </RibbonGroup>  
                 <RibbonGroup x:Name="PrimitivesGroup" Header="Primitives">  
                     <RibbonMenuButton Label="Arc">
                         <RibbonMenuItem Header="3 points" Click="ButtonCreateArc3Points_OnClick"> </RibbonMenuItem>  
@@ -28,9 +31,10 @@
                 </RibbonGroup>  
             </RibbonTab>
             <RibbonTab x:Name="MachineTab" Header="Machine">
-               
             </RibbonTab>
         </Ribbon>
+        <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
+        </ScrollViewer>
         
     </Grid>
 </Window>
