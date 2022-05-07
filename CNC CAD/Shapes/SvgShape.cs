@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Shapes;
 using System.Xml;
+using CNC_CAD.CNC.Controllers;
 using WPFShape = System.Windows.Shapes.Shape;
 using CNC_CAD.GCode;
 
@@ -22,9 +24,14 @@ namespace CNC_CAD.Shapes
             //TODO: Implement more svg shapes
         }
         
-        public override List<GCodeCommand> GenerateGCodeCommands()
+        public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
         {
-            throw new System.NotImplementedException();
+            var commands = new List<GCodeCommand>();
+            foreach (var shape in _shapes)
+            {
+                commands.AddRange(shape.GenerateGCodeCommands(config));
+            }
+            return commands;
         }
 
         public override List<WPFShape> GetControlShapes()

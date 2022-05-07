@@ -1,36 +1,25 @@
 using System.Collections.Generic;
-using System.Numerics;
 using CNC_CAD.CNC.Controllers;
+using System.Windows;
 
 namespace CNC_CAD.GCode
 {
     /// <summary>
-    /// Билдер команд для рисование линий с абсолютными координатами 
+    /// Строитель команд для рисование линий с абсолютными координатами 
     /// </summary>
     public class GCodeAbsoluteBuilder2D : GCodeBuilder2D
     {
-        private readonly Vector2 _position;
+        private readonly Vector _position;
 
-        public GCodeAbsoluteBuilder2D(CNCConfig config, Vector2 positionToMove) : base(config)
+        public GCodeAbsoluteBuilder2D(CncConfig config, Vector positionToMove) : base(config)
         {
             _position = positionToMove;
         }
-
-        public override GCodeCommand Build()
+        
+        protected override List<string> GenerateCommands()
         {
-            var commandsSequence = new List<string>();
-            if (HeadPositionAtStart != null)
-            {
-                commandsSequence.Add($"G0 {Config.AxisZ}{HeadPositionAtStart}");
-            }
-
-            commandsSequence.Add($"G0 {Config.AxisX}{_position.X}{Config.AxisY}{_position.Y}");
-            if (HeadPositionAtEnd != null)
-            {
-                commandsSequence.Add($"G0 {Config.AxisZ}{HeadPositionAtEnd}");
-            }
-
-            return new GCodeCommand(commandsSequence.ToArray());
+            var physical = Config.ConvertVectorToPhysical(_position);
+            return new List<string>{$"G0 {Config.AxisX}{physical.X}{Config.AxisY}{physical.Y}"};
         }
     }
 }

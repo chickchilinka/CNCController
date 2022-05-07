@@ -6,17 +6,18 @@ namespace CNC_CAD.Workspaces
 {
     public class Workspace
     {
-        private List<Shape> _shapes;
-        public Workspace2D Workspace2D { get; private set; }
+        public List<Shape> Shapes { get; }
+        public Workspace2D Workspace2D { get; }
 
         public Workspace()
         {
-            _shapes = new List<Shape>();
+            Shapes = new List<Shape>();
             Workspace2D = new Workspace2D();
         }
 
         public void AddShape(Shape shape)
         {
+            Shapes.Add(shape);
             foreach (var wpfShape in shape.GetControlShapes())
             {
                 Workspace2D.AddShape(wpfShape);    

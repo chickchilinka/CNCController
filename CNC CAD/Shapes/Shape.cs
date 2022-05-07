@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Numerics;
+using CNC_CAD.CNC.Controllers;
 using WPFShape = System.Windows.Shapes.Shape;
 using CNC_CAD.GCode;
 
@@ -9,7 +10,7 @@ namespace CNC_CAD.Shapes
     {
         protected List<WPFShape> WpfShapes = new List<WPFShape>();
         protected Shape(){}
-        public abstract List<GCodeCommand> GenerateGCodeCommands();
+        public abstract List<GCodeCommand> GenerateGCodeCommands(CncConfig config);
 
         public virtual List<WPFShape> GetControlShapes()
         {

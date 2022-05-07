@@ -7,8 +7,8 @@ namespace CNC_CAD.CNC.Controllers
 {
     public class SimpleCncSerialController2D:AbstractController2D
     {
-        private CNCConfig _config;
-        public SimpleCncSerialController2D(CNCConfig config)
+        private CncConfig _config;
+        public SimpleCncSerialController2D(CncConfig config)
         {
             _config = config;
         }

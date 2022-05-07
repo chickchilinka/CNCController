@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using CNC_CAD.CNC.Controllers;
 using CNC_CAD.Tools;
 
 namespace CNC_CAD
@@ -10,7 +11,7 @@ namespace CNC_CAD
     {
         public static bool ShowConsole = true;
         public static int ShapeID = 0;
-
+        public static CncConfig currentCNCConfig = new CncConfig();
         public App()
         {
             if (ShowConsole)

@@ -14,7 +14,7 @@ namespace CNC_CAD.Base
             _serialPort.Open();
         }
 
-        public static SimpleSerialController CreateSerialController(CNCConfig config)
+        public static SimpleSerialController CreateSerialController(CncConfig config)
         {
             return new SimpleSerialController(new SerialPort(config.COMPort, config.BaudRate));
         }

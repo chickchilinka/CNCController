@@ -1,35 +1,71 @@
-using System.Numerics;
+using System.Collections.Generic;
+using System.Windows;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Tools;
 
 namespace CNC_CAD.GCode
 {
     public abstract class GCodeBuilder2D
     {
-        protected float? HeadPositionAtStart;
-        protected float? HeadPositionAtEnd;
-        protected CNCConfig Config;
+        protected Logger Logger;
+        protected bool? HeadDownAtStart;
+        protected bool? HeadDownAtEnd;
+        protected CncConfig Config;
 
-        protected GCodeBuilder2D(CNCConfig config)
+        protected GCodeBuilder2D(CncConfig config)
         {
             Config = config;
+            Logger = Logger.CreateForClass(this.GetType());
         }
         
-        public static GCodeBuilder2D WithAbsoluteMove(CNCConfig config, Vector2 position)
+        public static GCodeBuilder2D WithAbsoluteMove(CncConfig config, Vector position)
         {
             return new GCodeAbsoluteBuilder2D(config, position);
         }
-
-        public GCodeBuilder2D SetHeadPositionAtStart(float position)
+        
+        public static GCodeBuilder2D ForPath(CncConfig config, string path)
         {
-            HeadPositionAtStart = position;
-            return this;
-        }
-        public GCodeBuilder2D SetHeadPositionAtEnd(float position)
-        {
-            HeadPositionAtEnd = position;
-            return this;
+            return new GCodePathBuilder(config, path);
         }
 
-        public abstract GCodeCommand Build();
+        public GCodeBuilder2D SetHeadDownAtStart(bool set)
+        {
+            HeadDownAtStart = set;
+            return this;
+        }
+        public GCodeBuilder2D SetHeadDownAtEnd(bool set)
+        {
+            HeadDownAtEnd = set;
+            return this;
+        }
+
+        protected void AddHeadCommandForStart(List<string> commandsSequence)
+        {
+            if (HeadDownAtStart != null)
+            {
+                var headPosStart = HeadDownAtStart == true ? Config.HeadDown : Config.HeadUp;
+                commandsSequence.Add($"G0 {Config.AxisZ}{headPosStart}");
+            }
+        }
+
+        protected void AddHeadCommandForEnd(List<string> commandsSequence)
+        {
+            if (HeadDownAtEnd != null)
+            {
+                var headPosEnd = HeadDownAtEnd == true ? Config.HeadDown : Config.HeadUp;
+                commandsSequence.Add($"G0 {Config.AxisZ}{headPosEnd}");
+            }
+        }
+
+        public virtual List<string> Build()
+        {
+            var commandsSequence = new List<string>();
+            AddHeadCommandForStart(commandsSequence);
+            commandsSequence.AddRange(GenerateCommands());
+            AddHeadCommandForEnd(commandsSequence);
+            return commandsSequence;
+        }
+
+        protected abstract List<string> GenerateCommands();
     }
 }

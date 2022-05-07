@@ -6,11 +6,11 @@ namespace CNC_CAD.GCode
 {
     public class GCodeCommand:IEnumerable<string>
     {
-        private readonly string[] _stringCommands;
+        private readonly List<string> _stringCommands;
         public string this[int i] => _stringCommands[i];
-        public int Length => _stringCommands.Length;
+        public int Length => _stringCommands.Count;
 
-        public GCodeCommand(string[] stringCommands)
+        public GCodeCommand(List<string> stringCommands)
         {
             _stringCommands = stringCommands;
         }

@@ -31,6 +31,9 @@
                 </RibbonGroup>  
             </RibbonTab>
             <RibbonTab x:Name="MachineTab" Header="Machine">
+                <RibbonGroup x:Name="Start" Header="Send to machine">  
+                    <RibbonButton x:Name="StartDraw" Label="Start dummy draw" Click="StartDummyDraw_Click" />  
+                </RibbonGroup>  
             </RibbonTab>
         </Ribbon>
         <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
