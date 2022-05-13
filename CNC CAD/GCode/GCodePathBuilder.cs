@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CNC_CAD.CNC.Controllers;
 using System.Windows;
+using CNC_CAD.SvgTools;
 using CNC_CAD.SVGTools;
 
 namespace CNC_CAD.GCode
@@ -55,6 +56,8 @@ namespace CNC_CAD.GCode
                     return ArcAbsolute(command);
                 case 'a':
                     return ArcRelative(command);
+                case 'C':
+                    return CubicBezierAbsolute(command);
                 default:
                     return new List<string>();
             }
@@ -100,35 +103,46 @@ namespace CNC_CAD.GCode
                 .Build();
         }
 
-        private List<String> ArcAbsolute(string command)
+        private List<string> ArcAbsolute(string command)
         {
             List<string> commands = new List<string>();
             var args = GetCommandArguments(command);
             var arc = new SvgArc(args, _currentPoint);
-            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += 20*Math.Sign(arc.Dtetha) * Math.PI / 180d)
+            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += 10*Math.Sign(arc.Dtetha) * Math.PI / 180d)
             {
                 commands.AddRange(WithAbsoluteMove(Config, arc.GetPointOnArcAngle(i)).Build());
             }
-
             _currentPoint = arc.GetEndpoint();
             commands.AddRange(WithAbsoluteMove(Config, _currentPoint).Build());
-            
             return commands;
         }
         
-        private List<String> ArcRelative(string command)
+        private List<string> ArcRelative(string command)
         {
             List<string> commands = new List<string>();
             var args = GetCommandArguments(command);
             args[^1] += _currentPoint.Y;
             args[^2] += _currentPoint.X;
             var arc = new SvgArc(args, _currentPoint);
-            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += 20*Math.Sign(arc.Dtetha) * Math.PI / 180d)
+            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += 10*Math.Sign(arc.Dtetha) * Math.PI / 180d)
             {
                 commands.AddRange(WithAbsoluteMove(Config, arc.GetPointOnArcAngle(i)).Build());
             }
             _currentPoint = arc.GetEndpoint();
             commands.AddRange(WithAbsoluteMove(Config, _currentPoint).Build());
+            return commands;
+        }
+
+        private List<string> CubicBezierAbsolute(string command)
+        {
+            List<string> commands = new List<string>();
+            var args = GetCommandArguments(command);
+            var cubic = new SvgCubicBezier(args, _currentPoint);
+            for (double i = 0; i<=1d; i+=0.01d)
+            {
+                commands.AddRange(WithAbsoluteMove(Config, cubic.GetPointAt(i)).Build());
+            }
+            _currentPoint = new Vector(args[^2], args[^1]);
             return commands;
         }
 
