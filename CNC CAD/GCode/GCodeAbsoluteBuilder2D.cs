@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CNC_CAD.CNC.Controllers;
 using System.Windows;
@@ -19,7 +20,8 @@ namespace CNC_CAD.GCode
         protected override List<string> GenerateCommands()
         {
             var physical = Config.ConvertVectorToPhysical(_position);
-            return new List<string>{$"G0 {Config.AxisX}{physical.X}{Config.AxisY}{physical.Y}"};
+            return new List<string>{$"G0 {Config.AxisX}{physical.X.ToString(System.Globalization.CultureInfo.InvariantCulture)}" +
+                                    $"{Config.AxisY}{physical.Y.ToString(System.Globalization.CultureInfo.InvariantCulture)}"};
         }
     }
 }

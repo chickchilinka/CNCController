@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CNC_CAD.GCode;
 using CNC_CAD.Tools;
 
@@ -12,13 +13,17 @@ namespace CNC_CAD.CNC.Controllers
 
         public override void ExecuteGCodeCommands(IEnumerable<GCodeCommand> commands)
         {
-            _logger.Log("Executing:");
-            foreach (var subCommand in commands.SelectMany(command => command))
+            Thread thread = new Thread(() =>
             {
-                _logger.Log(subCommand);
-            }
-
-            _logger.Log("End of commands execution");
+                _logger.Log("Executing:");
+                foreach (var subCommand in commands.SelectMany(command => command))
+                {
+                    Thread.Sleep(300);
+                    _logger.Log(subCommand);
+                }
+                _logger.Log("End of commands execution");
+            });
+            thread.Start(); 
         }
     }
 }

@@ -105,10 +105,14 @@ namespace CNC_CAD.GCode
             List<string> commands = new List<string>();
             var args = GetCommandArguments(command);
             var arc = new SvgArc(args, _currentPoint);
-            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += Math.Sign(arc.Dtetha) * Math.PI / 180d)
+            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += 20*Math.Sign(arc.Dtetha) * Math.PI / 180d)
             {
                 commands.AddRange(WithAbsoluteMove(Config, arc.GetPointOnArcAngle(i)).Build());
             }
+
+            _currentPoint = arc.GetEndpoint();
+            commands.AddRange(WithAbsoluteMove(Config, _currentPoint).Build());
+            
             return commands;
         }
         
@@ -119,10 +123,12 @@ namespace CNC_CAD.GCode
             args[^1] += _currentPoint.Y;
             args[^2] += _currentPoint.X;
             var arc = new SvgArc(args, _currentPoint);
-            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += Math.Sign(arc.Dtetha) * Math.PI / 180d)
+            for (double i = 0; Math.Abs(i) <= Math.Abs(arc.Dtetha); i += 20*Math.Sign(arc.Dtetha) * Math.PI / 180d)
             {
                 commands.AddRange(WithAbsoluteMove(Config, arc.GetPointOnArcAngle(i)).Build());
             }
+            _currentPoint = arc.GetEndpoint();
+            commands.AddRange(WithAbsoluteMove(Config, _currentPoint).Build());
             return commands;
         }
 

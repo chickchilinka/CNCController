@@ -116,5 +116,10 @@ namespace CNC_CAD.SVGTools
             var y = Math.Sin(_angle) * _rx * Math.Cos(radFromStart) + Math.Cos(_angle) * _ry * Math.Sin(radFromStart) + _cy;
             return new Vector(x, y);
         }
+
+        public Vector GetEndpoint()
+        {
+            return new Vector(_x2, _y2);
+        }
     }
 }

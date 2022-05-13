@@ -48,5 +48,10 @@ namespace CNC_CAD
         {
             _operationsHistory.LaunchOperation(new SendsCommandToMachineOperation(new DummyCncController2D(), _workspace, App.currentCNCConfig));
         }
+
+        private void StartCncDraw_Click(object sender, RoutedEventArgs e)
+        {
+            _operationsHistory.LaunchOperation(new SendsCommandToMachineOperation(new SimpleCncSerialController2D(App.currentCNCConfig), _workspace, App.currentCNCConfig));
+        }
     }
 }

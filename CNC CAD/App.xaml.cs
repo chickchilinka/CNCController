@@ -11,7 +11,12 @@ namespace CNC_CAD
     {
         public static bool ShowConsole = true;
         public static int ShapeID = 0;
-        public static CncConfig currentCNCConfig = new CncConfig();
+        public static CncConfig currentCNCConfig = new CncConfig()
+        {
+            HeadDown = -40,
+            COMPort = "COM4",
+            BaudRate = 115200
+        };
         public App()
         {
             if (ShowConsole)

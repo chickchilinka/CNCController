@@ -32,7 +32,8 @@
             </RibbonTab>
             <RibbonTab x:Name="MachineTab" Header="Machine">
                 <RibbonGroup x:Name="Start" Header="Send to machine">  
-                    <RibbonButton x:Name="StartDraw" Label="Start dummy draw" Click="StartDummyDraw_Click" />  
+                    <RibbonButton x:Name="StartDraw" Label="Start dummy draw" Click="StartDummyDraw_Click" />
+                    <RibbonButton x:Name="StartCncDraw" Label="Start CNC draw" Click="StartCncDraw_Click" />  
                 </RibbonGroup>  
             </RibbonTab>
         </Ribbon>
