@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CNC_CAD.Base;
+using CNC_CAD.Configs;
 using CNC_CAD.GCode;
 using CNC_CAD.Tools;
 

@@ -1,6 +1,7 @@
 using System;
 using System.IO.Ports;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
 
 namespace CNC_CAD.Base
 {

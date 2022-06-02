@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
 using CNC_CAD.Tools;
 
 namespace CNC_CAD
@@ -13,7 +14,7 @@ namespace CNC_CAD
         public static int ShapeID = 0;
         public static CncConfig currentCNCConfig = new CncConfig()
         {
-            HeadDown = -40,
+            HeadDown = -135d,
             COMPort = "COM4",
             BaudRate = 115200
         };

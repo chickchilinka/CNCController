@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CNC_CAD.CNC.Controllers;
 using System.Windows;
+using CNC_CAD.Configs;
 
 namespace CNC_CAD.GCode
 {
@@ -20,7 +21,7 @@ namespace CNC_CAD.GCode
         protected override List<string> GenerateCommands()
         {
             var physical = Config.ConvertVectorToPhysical(_position);
-            return new List<string>{$"G0 {Config.AxisX}{physical.X.ToString(System.Globalization.CultureInfo.InvariantCulture)}" +
+            return new List<string>{$"G00 {Config.AxisX}{physical.X.ToString(System.Globalization.CultureInfo.InvariantCulture)}" +
                                     $"{Config.AxisY}{physical.Y.ToString(System.Globalization.CultureInfo.InvariantCulture)}"};
         }
     }

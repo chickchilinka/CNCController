@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
 using CNC_CAD.Tools;
 using CNC_CAD.Workspaces;
 using CNC_CAD.Shapes;

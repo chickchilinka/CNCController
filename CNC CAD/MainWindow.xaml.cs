@@ -1,8 +1,10 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Curves;
 using CNC_CAD.DrawShapeWindows;
-using CNC_CAD.GCode;
 using CNC_CAD.Operations;
+using CNC_CAD.Shapes;
 using CNC_CAD.Tools;
 using CNC_CAD.Workspaces;
 

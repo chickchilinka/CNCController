@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Windows;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
+using CNC_CAD.Shapes;
 using CNC_CAD.Tools;
 
 namespace CNC_CAD.GCode
@@ -23,7 +25,7 @@ namespace CNC_CAD.GCode
             return new GCodeAbsoluteBuilder2D(config, position);
         }
         
-        public static GCodeBuilder2D ForPath(CncConfig config, string path)
+        public static GCodeBuilder2D ForPath(CncConfig config, PathShape path)
         {
             return new GCodePathBuilder(config, path);
         }
@@ -44,7 +46,7 @@ namespace CNC_CAD.GCode
             if (HeadDownAtStart != null)
             {
                 var headPosStart = HeadDownAtStart == true ? Config.HeadDown : Config.HeadUp;
-                commandsSequence.Add($"G0 {Config.AxisZ}{headPosStart}");
+                commandsSequence.Add($"G00 {Config.AxisZ}{headPosStart}");
             }
         }
 
@@ -53,7 +55,7 @@ namespace CNC_CAD.GCode
             if (HeadDownAtEnd != null)
             {
                 var headPosEnd = HeadDownAtEnd == true ? Config.HeadDown : Config.HeadUp;
-                commandsSequence.Add($"G0 {Config.AxisZ}{headPosEnd}");
+                commandsSequence.Add($"G00 {Config.AxisZ}{headPosEnd}");
             }
         }
 

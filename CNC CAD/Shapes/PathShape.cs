@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -7,11 +6,14 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
+using CNC_CAD.Curves;
 using CNC_CAD.GCode;
+using Vector = System.Windows.Vector;
 
 namespace CNC_CAD.Shapes
 {
-    public class PathShape : Shape
+    public class PathShape : SvgElement, ICurve
     {
         private string _data;
         public string Data
@@ -21,12 +23,14 @@ namespace CNC_CAD.Shapes
         }
 
         private string _name;
+        public List<ICurve> Curves { get; }
+        public Vector StartPoint { get; set; }
+        public Vector EndPoint { get; set; }
 
-        public PathShape(string data, string name)
+        public PathShape(string data, string name, List<ICurve> curves)
         {
             Data = data;
             _name = name;
-            var geometry = Geometry.Parse(data);
             WpfShapes.Add(new Path()
             {
                 Data = Geometry.Parse(data),
@@ -34,33 +38,28 @@ namespace CNC_CAD.Shapes
                 StrokeThickness = 1d,
                 Stroke = Brushes.Black
             });
+            Curves = curves;
         }
 
         public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
         {
             return new List<GCodeCommand>
             {
-                new(GCodeBuilder2D.ForPath(config, Data)
+                new(GCodeBuilder2D.ForPath(config, this)
                     .SetHeadDownAtStart(false)
                     .SetHeadDownAtEnd(true)
                     .Build())
             };
         }
-
-
-        public override void Move(Vector2 delta)
+        
+        public List<Vector> Linearize(AccuracySettings accuracy)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public override void Scale(Vector2 multiplication, Vector2 pivot)
+        public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void Rotate(float angle, Vector2 pivot)
-        {
-            throw new NotImplementedException();
+            return $"{_name} startPoint:{StartPoint}, endPoint:{EndPoint}";
         }
     }
 }

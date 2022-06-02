@@ -4,23 +4,30 @@ using System.Numerics;
 using System.Windows.Shapes;
 using System.Xml;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
 using WPFShape = System.Windows.Shapes.Shape;
 using CNC_CAD.GCode;
+using CNC_CAD.Tools;
 
 namespace CNC_CAD.Shapes
 {
     public class SvgShape:Shape
     {
-        private List<Shape> _shapes = new List<Shape>();
+        private List<Shape> _shapes = new();
+        private SvgPathDataParser _dataParser;
         public SvgShape(XmlReader xmlReader)
         {
             XmlDocument document = new XmlDocument();
             document.Load(xmlReader);
             XmlNodeList pathList = document.GetElementsByTagName("path");
+            _dataParser = new SvgPathDataParser();
+            List<PathShape> pathShapes = new();
             foreach (XmlElement element in pathList)
             {
-                _shapes.Add(new PathShape(element.GetAttribute("d"), element.GetAttribute("id") ?? (App.ShapeID++).ToString()));
+                pathShapes.Add(_dataParser.CreatePath(element));
             }
+            ConcatShapes(pathShapes);
+            _shapes.AddRange(pathShapes);
             //TODO: Implement more svg shapes
         }
         
@@ -44,19 +51,30 @@ namespace CNC_CAD.Shapes
             return shapesList;
         }
 
-        public override void Move(Vector2 delta)
+        public static void ConcatShapes(List<PathShape> shapes)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override void Scale(Vector2 multiplication, Vector2 pivot)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void Rotate(float angle, Vector2 pivot)
-        {
-            throw new System.NotImplementedException();
+            bool found = false;
+            for (int i = 0; i < shapes.Count; i++)
+            {
+                if (shapes[i] != null)
+                {
+                    for (int j = 0; j < shapes.Count; j++)
+                    {
+                        if (i != j && shapes[j] != null && shapes[j].StartPoint == shapes[i].EndPoint)
+                        {
+                            found = true;
+                            shapes[i].Curves.AddRange(shapes[j].Curves);
+                            shapes[i].EndPoint = shapes[j].EndPoint;
+                            shapes.RemoveAt(j);
+                            j--;
+                        }
+                    }
+                }
+            }
+            if (found)
+            {
+                ConcatShapes(shapes);
+            }
         }
     }
 }

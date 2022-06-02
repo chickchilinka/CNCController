@@ -20,7 +20,7 @@ namespace CNC_CAD.Tools
             return new Logger(type);
         }
         
-        public void Log(string message)
+        public void Log(object message)
         {
             string dateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             Console.WriteLine($"[{dateTime}]{loggerClass.Name}:{message}");

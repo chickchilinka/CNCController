@@ -1,7 +1,6 @@
 using System.Windows;
-using CNC_CAD.SvgTools;
 
-namespace CNC_CAD.SVGTools
+namespace CNC_CAD.Curves
 {
     public class SvgQuadraticBezier
     {
@@ -10,7 +9,7 @@ namespace CNC_CAD.SVGTools
         private Vector P2;
         public SvgQuadraticBezier(double[] args, Vector start)
         {
-         
+            
         }
         
     }
