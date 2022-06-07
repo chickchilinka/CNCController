@@ -11,8 +11,10 @@ namespace CNC_CAD.Curves
         private Vector P1;
         private Vector P2;
         private Vector P3;
+        private SvgCubicBezier continuation;
         public Vector StartPoint => P0;
-        public Vector EndPoint => P3;
+        public Vector EndPoint  => continuation?.EndPoint ?? P3;
+        
         public SvgCubicBezier(double[] args, Vector _start, bool relative = false)
         {
             P0 = _start;
@@ -24,6 +26,21 @@ namespace CNC_CAD.Curves
                 P1 += _start;
                 P2 += _start;
                 P3 += _start;
+            }
+            DetectContinuation(args, relative);
+        }
+        
+        public void DetectContinuation(double[] arguments, bool relative)
+        {
+            if (arguments.Length > 6 )
+            {
+                if (arguments.Length % 6 != 0)
+                {
+                    throw new Exception("Invalid arguments count");
+                }
+                double[] continArgs = new double[arguments.Length-6];
+                Array.Copy(arguments, 6, continArgs, 0, arguments.Length-6);
+                continuation = new SvgCubicBezier(continArgs, P3, relative);
             }
         }
 
@@ -56,6 +73,12 @@ namespace CNC_CAD.Curves
             for (double i = 0; i <= 1d; i += accuracy.RelativeAccuracy)
             {
                 points.Add(GetPointAt(i));
+            }
+            points.Add(P3);
+
+            if (continuation != null)
+            {
+                points.AddRange(continuation.Linearize(accuracy));
             }
 
             return points;

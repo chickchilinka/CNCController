@@ -18,7 +18,7 @@ namespace CNC_CAD.CNC.Controllers
                 _logger.Log("Executing:");
                 foreach (var subCommand in commands.SelectMany(command => command))
                 {
-                    Thread.Sleep(300);
+                    Thread.Sleep(10);
                     Console.WriteLine(subCommand);
                 }
                 _logger.Log("End of commands execution");

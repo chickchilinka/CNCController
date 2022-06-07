@@ -23,5 +23,14 @@ namespace CNC_CAD.Workspaces
                 Workspace2D.AddShape(wpfShape);    
             }
         }
+        
+        public void RemoveShape(Shape shape)
+        {
+            Shapes.Remove(shape);
+            foreach (var wpfShape in shape.GetControlShapes())
+            {
+                Workspace2D.RemoveShape(wpfShape);    
+            }
+        }
     }
 }

@@ -9,6 +9,18 @@ namespace CNC_CAD.GCode
 {
     public abstract class GCodeBuilder2D
     {
+        public static GCodeAbsoluteBuilder2D WithAbsoluteMove(CncConfig config, Vector position)
+        {
+            return new GCodeAbsoluteBuilder2D(config, position);
+        }
+        
+        public static GCodePathBuilder ForPath(CncConfig config, PathShape path)
+        {
+            return new GCodePathBuilder(config, path);
+        }
+    }
+    public abstract class GCodeBuilder2D<T>:GCodeBuilder2D where T:GCodeBuilder2D<T>
+    {
         protected Logger Logger;
         protected bool? HeadDownAtStart;
         protected bool? HeadDownAtEnd;
@@ -19,26 +31,15 @@ namespace CNC_CAD.GCode
             Config = config;
             Logger = Logger.CreateForClass(this.GetType());
         }
-        
-        public static GCodeBuilder2D WithAbsoluteMove(CncConfig config, Vector position)
-        {
-            return new GCodeAbsoluteBuilder2D(config, position);
-        }
-        
-        public static GCodeBuilder2D ForPath(CncConfig config, PathShape path)
-        {
-            return new GCodePathBuilder(config, path);
-        }
-
-        public GCodeBuilder2D SetHeadDownAtStart(bool set)
+        public T SetHeadDownAtStart(bool set)
         {
             HeadDownAtStart = set;
-            return this;
+            return (T)this;
         }
-        public GCodeBuilder2D SetHeadDownAtEnd(bool set)
+        public T SetHeadDownAtEnd(bool set)
         {
             HeadDownAtEnd = set;
-            return this;
+            return (T)this;
         }
 
         protected void AddHeadCommandForStart(List<string> commandsSequence)

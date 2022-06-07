@@ -7,6 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="auto" d:DesignWidth="auto">
     <Grid>
+        
         <Canvas x:Name="Canvas" Width="auto" Height="auto"></Canvas>
     </Grid>
 </UserControl>

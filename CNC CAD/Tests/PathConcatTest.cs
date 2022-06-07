@@ -6,14 +6,14 @@ using CNC_CAD.Tools;
 
 namespace CNC_CAD.Tests
 {
-    public class PathConcatTest
+    public class PathConcatTest:ITest
     {
         Logger _logger;
-
         public PathConcatTest()
         {
             _logger = Logger.CreateFor(this);
         }
+
         public void Test()
         {
             //Test shapes

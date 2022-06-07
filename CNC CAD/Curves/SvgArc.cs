@@ -21,8 +21,9 @@ namespace CNC_CAD.Curves
         private readonly bool _fa;
         private readonly bool _fs;
         private double _cx, _cy;
+        private SvgArc continuation;
         public Vector StartPoint => new(_x1, _y1);
-        public Vector EndPoint => new(_x2, _y2);
+        public Vector EndPoint => continuation?.EndPoint ?? new(_x2, _y2);
         
         public double Tetha1 { get; private set; }
         public double Dtetha { get; private set; }
@@ -43,8 +44,22 @@ namespace CNC_CAD.Curves
                 _x2 += startPoint.X;
                 _y2 += startPoint.Y;
             }
-
+            DetectContinuation(arguments, relative);
             EndpointToCenterArcParams();
+        }
+        public void DetectContinuation(double[] arguments, bool relative)
+        {
+            if (arguments.Length > 7 )
+            {
+                if (arguments.Length % 7 != 0)
+                {
+                    throw new Exception("Invalid arguments count");
+                }
+
+                double[] continArgs = new double[arguments.Length-7];
+                Array.Copy(arguments, 7, continArgs, 0, arguments.Length-7);
+                continuation = new SvgArc(continArgs, new Vector(_x2, _y2), relative);
+            }
         }
         private void EndpointToCenterArcParams()
         {
@@ -120,7 +135,11 @@ namespace CNC_CAD.Curves
             {
                 points.Add(GetPointOnArcAngle(i));
             }
-
+            points.Add(new Vector(_x2, _y2));
+            if (continuation != null)
+            {
+                points.AddRange(continuation.Linearize(accuracy));
+            }
             return points;
         }
     }

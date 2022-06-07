@@ -5,7 +5,7 @@ using CNC_CAD.Shapes;
 
 namespace CNC_CAD.GCode
 {
-    public class GCodePathBuilder : GCodeBuilder2D
+    public class GCodePathBuilder : GCodeBuilder2D<GCodePathBuilder>
     {
         private PathShape _pathShape;
         private CncConfig _config;
@@ -19,6 +19,10 @@ namespace CNC_CAD.GCode
         {
             List<string> commands = new();
             ICurve lastCurve = null;
+            commands.AddRange(WithAbsoluteMove(_config, _pathShape.StartPoint)
+                .SetHeadDownAtStart(false)
+                .SetHeadDownAtEnd(true)
+                .Build());
             foreach (var curve in _pathShape.Curves)
             {
                 if (lastCurve != null && lastCurve.EndPoint != curve.StartPoint)
@@ -26,11 +30,14 @@ namespace CNC_CAD.GCode
                     commands.AddRange(WithAbsoluteMove(_config, curve.StartPoint)
                         .SetHeadDownAtStart(false)
                         .SetHeadDownAtEnd(true)
+                        .SetFastTravel(true)
                         .Build());
                 }
                 foreach (var point in curve.Linearize(_config.AccuracySettings))
                 {
-                    commands.AddRange(WithAbsoluteMove(_config, point).Build());   
+                    commands.AddRange(WithAbsoluteMove(_config, point)
+                        .SetFastTravel(false)
+                        .Build());   
                 }
                 lastCurve = curve;
             }

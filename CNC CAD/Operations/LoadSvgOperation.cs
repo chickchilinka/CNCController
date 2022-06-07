@@ -11,7 +11,7 @@ namespace CNC_CAD.Operations
     {
         private bool _canceled;
         private readonly Workspace _currentWorkspace;
-        private Shape _shape;
+        private SvgShape _shape;
         public LoadSvgOperation(Workspace workspace) : base("Load SVG")
         {
             _currentWorkspace = workspace;
@@ -42,14 +42,21 @@ namespace CNC_CAD.Operations
         private void AddSvgShape(XmlReader reader)
         {
             _shape = new SvgShape(reader);
-            _currentWorkspace.AddShape(_shape);
+            foreach (var subshape in _shape._shapes)
+            {
+                _currentWorkspace.AddShape(subshape);   
+            }
         }
 
         public override void Undo()
         {
             if (!_canceled)
             {
-                
+                _canceled = true;
+                foreach (var subshape in _shape._shapes)
+                {
+                    _currentWorkspace.RemoveShape(subshape);
+                }
             }
         }
     }

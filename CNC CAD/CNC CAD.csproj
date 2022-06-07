@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <RootNamespace>CNC_CAD</RootNamespace>
         <UseWPF>true</UseWPF>
     </PropertyGroup>
@@ -14,7 +14,26 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Images" />
+      <Folder Include="bin\Debug\net6.0-windows" />
+      <Folder Include="RibbonElements" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="bin\Debug\net6.0-windows\Images\ImportButton_16x.png" />
+      <None Include="bin\Debug\net6.0-windows\Images\RunTest_16x.png" />
+      <None Include="bin\Debug\net6.0-windows\Images\Run_16x.png" />
+      <None Include="bin\Debug\net6.0-windows\Images\Undo_16x.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Images\ImportButton_16x.png" />
+      <Resource Include="Images\ImportButton_16x.png" />
+      <None Remove="Images\Run_16x.png" />
+      <Resource Include="Images\Run_16x.png" />
+      <None Remove="Images\RunTest_16x.png" />
+      <Resource Include="Images\RunTest_16x.png" />
+      <None Remove="Images\Undo_16x.png" />
+      <Resource Include="Images\Undo_16x.png" />
     </ItemGroup>
 
 </Project>

@@ -14,5 +14,23 @@ namespace CNC_CAD.CustomWPFElements
         {
             Canvas.Children.Add(shape);
         }
+        public void AddShapes(params Shape[] shapes)
+        {
+            foreach (var shape in shapes)
+            {
+                Canvas.Children.Add(shape);    
+            }
+            
+        }
+
+        public void RemoveShape(Shape shape)
+        {
+            Canvas.Children.Remove(shape);
+        }
+
+        public void ClearShapes()
+        {
+            Canvas.Children.Clear();
+        }
     }
 }

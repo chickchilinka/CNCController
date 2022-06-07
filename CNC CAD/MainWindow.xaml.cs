@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Ribbon;
 using CNC_CAD.CNC.Controllers;
 using CNC_CAD.Curves;
 using CNC_CAD.DrawShapeWindows;
 using CNC_CAD.Operations;
-using CNC_CAD.Shapes;
 using CNC_CAD.Tools;
 using CNC_CAD.Workspaces;
 
@@ -13,7 +14,7 @@ namespace CNC_CAD
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Fluent.RibbonWindow
     {
         private readonly Logger _logger;
         private readonly Workspace _workspace;
@@ -48,12 +49,17 @@ namespace CNC_CAD
 
         private void StartDummyDraw_Click(object sender, RoutedEventArgs e)
         {
-            _operationsHistory.LaunchOperation(new SendsCommandToMachineOperation(new DummyCncController2D(), _workspace, App.currentCNCConfig));
+            _operationsHistory.LaunchOperation(new SendShapesToMachineOperation(new DummyCncController2D(), _workspace, App.currentCNCConfig));
         }
 
         private void StartCncDraw_Click(object sender, RoutedEventArgs e)
         {
-            _operationsHistory.LaunchOperation(new SendsCommandToMachineOperation(new SimpleCncSerialController2D(App.currentCNCConfig), _workspace, App.currentCNCConfig));
+            _operationsHistory.LaunchOperation(new SendShapesToMachineOperation(new SimpleCncSerialController2D(App.currentCNCConfig), _workspace, App.currentCNCConfig));
+        }
+
+        private void Undo_OnClick(object sender, RoutedEventArgs e)
+        {
+            _operationsHistory.Undo();
         }
     }
 }

@@ -13,8 +13,9 @@ namespace CNC_CAD.Configs
         public double HeadUp = 0;
         public double HeadDown;
         public string COMPort;
+        public double BaseFeedRate = 100;
         public int BaudRate;
-        public AccuracySettings AccuracySettings = new AccuracySettings(10, 0.01d);
+        public AccuracySettings AccuracySettings = new AccuracySettings(10, 0.2d);
         public WorksheetConfig WorksheetConfig = new WorksheetConfig();
 
         public Vector ConvertVectorToPhysical(Vector position)

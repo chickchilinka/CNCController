@@ -12,12 +12,15 @@ namespace CNC_CAD.Tools
 {
     public class SvgPathDataParser
     {
-        private  Vector _startPoint;
-        private  Vector _currentPoint;
-
-        public  PathShape CreatePath(XmlElement element, PathShape last = null)
+        private Vector _startPoint;
+        private Vector _currentPoint;
+        private bool returnedToStart = false;
+        private List<ICurve> _curves;
+        private string lastCommand;
+        private Vector _lastSubpath;
+        public PathShape CreatePath(XmlElement element, PathShape last = null)
         {
-            var curves = new List<ICurve>();
+            _curves = new List<ICurve>();
             var data = element.GetAttribute("d");
             var id = element.GetAttribute("id");
             double strokeWidth = 1;
@@ -27,25 +30,32 @@ namespace CNC_CAD.Tools
             var args = GetCommandArguments(tokens[0]);
             _startPoint = new Vector(args[0], args[1]);
             _currentPoint = _startPoint;
-            if (tokens[0][0] == 'm' && last!=null)
+            _lastSubpath = _currentPoint;
+            if (args.Length>2 && args.Length % 2 == 0)
             {
-                _startPoint += last.EndPoint;
-                _currentPoint += last.EndPoint;
+                double[] lineArgs = new double[args.Length - 2];
+                Array.Copy(args, 2, lineArgs, 0, args.Length - 2);
+                _curves.Add(new SvgLine(lineArgs, _currentPoint, SvgLine.Direction.Both, tokens[0][0]=='m'));
+                _currentPoint = _curves[^1].EndPoint;
+                lastCommand = tokens[0];
             }
+
+
             for (var i = 1; i < tokens.Length; i++)
             {
                 var curve = GetCurveForCommand(tokens[i]);
                 if (curve != null)
-                    curves.Add(curve);
+                    _curves.Add(curve);
+                lastCommand = tokens[i];
             }
 
-            return new PathShape(data, id, curves);
+            return new PathShape(data, id, _curves, returnedToStart ? _startPoint : null);
         }
 
-        private  ICurve GetCurveForCommand(string command)
+        private ICurve GetCurveForCommand(string command)
         {
             var args = GetCommandArguments(command);
-            ICurve curve;
+            ICurve curve = null;
             switch (command[0])
             {
                 case 'M':
@@ -55,10 +65,22 @@ namespace CNC_CAD.Tools
                     curve = MoveToRelative(command);
                     break;
                 case 'L':
-                    curve = new SvgLine(args, _currentPoint);
+                    curve = new SvgLine(args, _currentPoint, SvgLine.Direction.Both);
                     break;
                 case 'l':
-                    curve = new SvgLine(args, _currentPoint, true);
+                    curve = new SvgLine(args, _currentPoint, SvgLine.Direction.Both, true);
+                    break;
+                case 'h':
+                    curve = new SvgLine(args, _currentPoint, SvgLine.Direction.Horizontal, true);
+                    break;
+                case 'H':
+                    curve = new SvgLine(args, _currentPoint, SvgLine.Direction.Horizontal);
+                    break;
+                case 'v':
+                    curve = new SvgLine(args, _currentPoint, SvgLine.Direction.Vertical, true);
+                    break;
+                case 'V':
+                    curve = new SvgLine(args, _currentPoint, SvgLine.Direction.Vertical);
                     break;
                 case 'A':
                     curve = new SvgArc(args, _currentPoint);
@@ -71,6 +93,18 @@ namespace CNC_CAD.Tools
                     break;
                 case 'c':
                     curve = new SvgCubicBezier(args, _currentPoint, true);
+                    break;
+                case 'Z':
+                case 'z':
+                    if (lastCommand[0] == 'm' || lastCommand[0] == 'M')
+                    {
+                        curve = new SvgLine(new double[]{_lastSubpath.X,_lastSubpath.Y}, _currentPoint,
+                            SvgLine.Direction.Both);
+                    }
+                    else
+                    {
+                        _currentPoint = _lastSubpath;
+                    }
                     break;
                 default:
                     curve = null;
@@ -85,30 +119,56 @@ namespace CNC_CAD.Tools
             return curve;
         }
 
-        private  ICurve MoveToAbsolute(string command)
+        private ICurve MoveToAbsolute(string command)
         {
             var args = GetCommandArguments(command);
-            _currentPoint.X = args[0];
-            _currentPoint.Y = args[1];
+            if (args.Length == 2)
+            {
+                _currentPoint.X = args[0];
+                _currentPoint.Y = args[1];
+            }
+            else if (args.Length % 2 == 0)
+            {
+                _currentPoint.X = args[0];
+                _currentPoint.Y = args[1];
+                _lastSubpath = _currentPoint;
+                double[] lineArgs = new double[args.Length - 2];
+                Array.Copy(args, 2, lineArgs, 0, args.Length - 2);
+                return new SvgLine(lineArgs, _currentPoint, SvgLine.Direction.Both);
+            }
+            _lastSubpath = _currentPoint;
             return null;
         }
 
-        private  ICurve MoveToRelative(string command)
+        private ICurve MoveToRelative(string command)
         {
             var args = GetCommandArguments(command);
-            _currentPoint.X += args[0];
-            _currentPoint.Y += args[1];
+            if (args.Length == 2)
+            {
+                _currentPoint.X += args[0];
+                _currentPoint.Y += args[1];
+            }
+            else if (args.Length % 2 == 0)
+            {
+                _currentPoint.X += args[0];
+                _currentPoint.Y += args[1];
+                _lastSubpath = _currentPoint;
+                double[] lineArgs = new double[args.Length - 2];
+                Array.Copy(args, 2, lineArgs, 0, args.Length - 2);
+                return new SvgLine(lineArgs, _currentPoint, SvgLine.Direction.Both, true);
+            }
+            _lastSubpath = _currentPoint;
             return null;
         }
 
-        public  double[] GetCommandArguments(string command)
+        public double[] GetCommandArguments(string command)
         {
-            var separators = "[\\s,]+";
-            var tokens = Regex.Split(command.Substring(1, command.Length - 1), separators)
-                .Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            var find = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+\\-]?\\d+)?";
+            var tokens = Regex.Matches(command.Substring(1, command.Length - 1), find)
+                .Where(t => !string.IsNullOrEmpty(t.Value)).ToArray();
             var args = new double[tokens.Length];
             for (int i = 0; i < tokens.Length; i++)
-                args[i] = double.Parse(tokens[i], new CultureInfo("en-EN"));
+                args[i] = double.Parse(tokens[i].Value, new CultureInfo("en-EN"));
             return args;
         }
     }

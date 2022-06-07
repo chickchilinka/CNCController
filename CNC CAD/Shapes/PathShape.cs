@@ -1,14 +1,11 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using CNC_CAD.CNC.Controllers;
 using CNC_CAD.Configs;
 using CNC_CAD.Curves;
 using CNC_CAD.GCode;
+using Transform = CNC_CAD.Curves.Transform;
 using Vector = System.Windows.Vector;
 
 namespace CNC_CAD.Shapes
@@ -24,10 +21,31 @@ namespace CNC_CAD.Shapes
 
         private string _name;
         public List<ICurve> Curves { get; }
-        public Vector StartPoint { get; set; }
-        public Vector EndPoint { get; set; }
+        private Vector? _start;
+        private Vector? _end;
+        public Vector StartPoint
+        {
+            get
+            {
+                if (Curves.Count > 0)
+                    return Curves[0].StartPoint;
+                return _start ?? default;
+            }
+            set => _start = value;
+        }
 
-        public PathShape(string data, string name, List<ICurve> curves)
+        public Vector EndPoint
+        {
+            get
+            {
+                if (Curves.Count > 0 && _end==null)
+                    return Curves[^1].EndPoint;
+                return _end ?? default;
+            }
+            set => _start = value;
+        }
+
+        public PathShape(string data, string name, List<ICurve> curves, Vector? end = null)
         {
             Data = data;
             _name = name;
@@ -39,6 +57,7 @@ namespace CNC_CAD.Shapes
                 Stroke = Brushes.Black
             });
             Curves = curves;
+            _end = end;
         }
 
         public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
@@ -61,5 +80,23 @@ namespace CNC_CAD.Shapes
         {
             return $"{_name} startPoint:{StartPoint}, endPoint:{EndPoint}";
         }
+
+        public override double? GetDistanceTo(Transform transform)
+        {
+            if (transform == this)
+                return Double.MaxValue;
+            if (transform is PathShape shape)
+            {
+                return (EndPoint - shape.StartPoint).Length;
+            }
+            return null;
+        }
+
+        public void Concat(PathShape shape2)
+        {
+            WpfShapes.AddRange(shape2.WpfShapes);
+            Curves.AddRange(shape2.Curves);
+        }
+        
     }
 }

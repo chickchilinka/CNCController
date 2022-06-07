@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Windows.Shapes;
+using System.IO;
+using System.Text;
 using System.Xml;
-using CNC_CAD.CNC.Controllers;
 using CNC_CAD.Configs;
 using WPFShape = System.Windows.Shapes.Shape;
 using CNC_CAD.GCode;
@@ -13,8 +11,12 @@ namespace CNC_CAD.Shapes
 {
     public class SvgShape:Shape
     {
-        private List<Shape> _shapes = new();
+        public List<Shape> _shapes { get; }= new();
         private SvgPathDataParser _dataParser;
+
+        public SvgShape(string xmlData) : 
+            this(XmlReader.Create(new MemoryStream(Encoding.UTF8.GetBytes(xmlData ?? "")))){}
+        
         public SvgShape(XmlReader xmlReader)
         {
             XmlDocument document = new XmlDocument();
@@ -26,7 +28,7 @@ namespace CNC_CAD.Shapes
             {
                 pathShapes.Add(_dataParser.CreatePath(element));
             }
-            ConcatShapes(pathShapes);
+            //ConcatShapes(pathShapes);
             _shapes.AddRange(pathShapes);
             //TODO: Implement more svg shapes
         }
@@ -63,8 +65,7 @@ namespace CNC_CAD.Shapes
                         if (i != j && shapes[j] != null && shapes[j].StartPoint == shapes[i].EndPoint)
                         {
                             found = true;
-                            shapes[i].Curves.AddRange(shapes[j].Curves);
-                            shapes[i].EndPoint = shapes[j].EndPoint;
+                            shapes[i].Concat(shapes[j]);
                             shapes.RemoveAt(j);
                             j--;
                         }
