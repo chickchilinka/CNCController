@@ -9,6 +9,7 @@ namespace CNC_CAD.GCode
         private readonly List<string> _stringCommands;
         public string this[int i] => _stringCommands[i];
         public int Length => _stringCommands.Count;
+        public int Time { get; set; }
 
         public GCodeCommand(List<string> stringCommands)
         {

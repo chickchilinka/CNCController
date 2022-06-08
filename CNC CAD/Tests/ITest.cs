@@ -1,6 +1,8 @@
-namespace CNC_CAD.Tests;
-
-public interface ITest
+namespace CNC_CAD.Tests
 {
-    void Test();
+
+    public interface ITest
+    {
+        void Test();
+    }
 }

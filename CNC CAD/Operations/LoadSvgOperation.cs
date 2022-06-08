@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows.Controls;
 using System.Xml;
 using CNC_CAD.Shapes;
+using CNC_CAD.Tools;
 using Microsoft.Win32;
 using CNC_CAD.Workspaces;
 
@@ -11,7 +12,7 @@ namespace CNC_CAD.Operations
     {
         private bool _canceled;
         private readonly Workspace _currentWorkspace;
-        private SvgShape _shape;
+        private SvgRoot _root;
         public LoadSvgOperation(Workspace workspace) : base("Load SVG")
         {
             _currentWorkspace = workspace;
@@ -41,8 +42,14 @@ namespace CNC_CAD.Operations
 
         private void AddSvgShape(XmlReader reader)
         {
-            _shape = new SvgShape(reader);
-            foreach (var subshape in _shape._shapes)
+            XmlDocument document = new XmlDocument();
+            document.Load(reader);
+            foreach (XmlElement root in document.GetElementsByTagName("svg"))
+            {
+                _root = new SvgParser().Create(root);    
+            }
+            
+            foreach (var subshape in _root.Children)
             {
                 _currentWorkspace.AddShape(subshape);   
             }
@@ -53,7 +60,7 @@ namespace CNC_CAD.Operations
             if (!_canceled)
             {
                 _canceled = true;
-                foreach (var subshape in _shape._shapes)
+                foreach (var subshape in _root.Children)
                 {
                     _currentWorkspace.RemoveShape(subshape);
                 }

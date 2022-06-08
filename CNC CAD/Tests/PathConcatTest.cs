@@ -44,7 +44,7 @@ namespace CNC_CAD.Tests
                 s3,
                 s4
             };
-            SvgShape.ConcatShapes(list);
+            SvgRoot.ConcatShapes(list);
             _logger.Log($"length:{list.Count}");
             foreach (var shape in list)
             {

@@ -10,7 +10,7 @@ using CNC_CAD.Windows;
 
 namespace CNC_CAD.Operations
 {
-    public class SendShapesToMachineOperation:Operation
+    public class SendShapesToMachineOperation:Operation, IInterruptable
     {
         private Logger _logger;
         private AbstractController2D _machineController;
@@ -46,11 +46,16 @@ namespace CNC_CAD.Operations
             _machineController.ExecuteGCodeCommands(gcodes);
         }
 
+        public void Stop()
+        {
+            _machineController.Stop();
+        }
+
         public List<Shape> GetOptimalSequence()
         {
             if (_workspace.Shapes == null || _workspace.Shapes.Count == 0)
                 return new List<Shape>();
-            return new OptimalPathBuilder<Shape>().GetPathForTransforms(_workspace.Shapes, out double sum);
+            return new OptimalPathBuilder<Shape>().GetPathForTransforms(_workspace.GetAllChildShapes(), out double sum);
         }
 
         public override void Undo()

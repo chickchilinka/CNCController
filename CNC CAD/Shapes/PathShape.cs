@@ -16,13 +16,14 @@ namespace CNC_CAD.Shapes
         public string Data
         {
             get => _data;
-            private init => _data = value;
+            set => _data = value;
         }
-
-        private string _name;
+        
         public List<ICurve> Curves { get; }
         private Vector? _start;
         private Vector? _end;
+        public double Length { get; }
+
         public Vector StartPoint
         {
             get
@@ -45,10 +46,14 @@ namespace CNC_CAD.Shapes
             set => _start = value;
         }
 
+        public PathShape()
+        {
+            
+        }
         public PathShape(string data, string name, List<ICurve> curves, Vector? end = null)
         {
             Data = data;
-            _name = name;
+            Name = name;
             WpfShapes.Add(new Path()
             {
                 Data = Geometry.Parse(data),
@@ -58,6 +63,15 @@ namespace CNC_CAD.Shapes
             });
             Curves = curves;
             _end = end;
+            SetParentToCurves();
+        }
+        
+        public void SetParentToCurves()
+        {
+            foreach (var curve in Curves)
+            {
+                curve.Parent = this;
+            }
         }
 
         public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
@@ -66,7 +80,7 @@ namespace CNC_CAD.Shapes
             {
                 new(GCodeBuilder2D.ForPath(config, this)
                     .SetHeadDownAtStart(false)
-                    .SetHeadDownAtEnd(true)
+                    .SetHeadDownAtEnd(false)
                     .Build())
             };
         }
@@ -78,7 +92,7 @@ namespace CNC_CAD.Shapes
 
         public override string ToString()
         {
-            return $"{_name} startPoint:{StartPoint}, endPoint:{EndPoint}";
+            return $"{Name} startPoint:{StartPoint}, endPoint:{EndPoint}";
         }
 
         public override double? GetDistanceTo(Transform transform)

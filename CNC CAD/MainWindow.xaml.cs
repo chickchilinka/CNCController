@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
+using CNC_CAD.Base;
 using CNC_CAD.CNC.Controllers;
 using CNC_CAD.Curves;
 using CNC_CAD.DrawShapeWindows;
@@ -27,6 +30,16 @@ namespace CNC_CAD
             _workspace = new Workspace();
             _operationsHistory = new OperationsHistory();
             WorkspaceScrollView.Content = _workspace.Workspace2D;
+            var controller = SimpleSerialController.CreateSerialController(App.currentCNCConfig);
+            _logger.Log("Executing:");
+            Thread thread = new Thread(() =>
+            {
+                controller.SendString("?");
+                _logger.Log(controller.Read());
+                //_logger.Log("End of commands execution");
+                controller.Dispose();
+            });
+            thread.Start();
         }
 
         private void ButtonCreateArc3Points_OnClick(object sender, RoutedEventArgs e)

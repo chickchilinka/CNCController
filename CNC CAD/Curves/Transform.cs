@@ -10,12 +10,20 @@ namespace CNC_CAD.Curves
         public virtual Vector ToGlobalPoint(Vector point)
         {
             if (Parent == null)
-                return point * TransformationMatrix;
-            return Parent.ToGlobalPoint(point * TransformationMatrix);
+            {
+                var newPointNoParent =  TransformationMatrix.Transform(new Point(point.X, point.Y));
+                point.X = newPointNoParent.X;
+                point.Y = newPointNoParent.Y;
+                return point;
+            }
+            var newPoint =  TransformationMatrix.Transform(new Point(point.X, point.Y));
+            point.X = newPoint.X;
+            point.Y = newPoint.Y;
+            return Parent.ToGlobalPoint(point);
         }
         public virtual void Move(Vector delta)
         {
-            TransformationMatrix.Transform(delta);
+            TransformationMatrix.Translate(delta.X, delta.Y);
         }
 
         public virtual void Scale(Vector multiplication, Vector? pivot = null)

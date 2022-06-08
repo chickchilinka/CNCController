@@ -32,5 +32,33 @@ namespace CNC_CAD.Workspaces
                 Workspace2D.RemoveShape(wpfShape);    
             }
         }
+
+        public List<Shape> GetAllChildShapes()
+        {
+            var children = new List<Shape>();
+            if (Shapes.Count > 0)
+            {
+                foreach (var shape in Shapes)
+                {
+                    children.AddRange(GetAllChildShapes(shape));
+                }
+            }
+
+            return children;
+        }
+        public List<Shape> GetAllChildShapes(Shape element)
+        {
+            var list = new List<Shape>();
+            if (element is SvgGroupElement group)
+            {
+                foreach (var child in group.Children)
+                {
+                    list.AddRange(GetAllChildShapes(child));
+                }
+                return list;
+            }
+            list.Add(element);
+            return list;
+        }
     }
 }

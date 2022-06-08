@@ -6,5 +6,6 @@ namespace CNC_CAD.CNC.Controllers
     public abstract class AbstractController2D
     {
         public abstract void ExecuteGCodeCommands(IEnumerable<GCodeCommand> commands);
+        public abstract void Stop();
     }
 }

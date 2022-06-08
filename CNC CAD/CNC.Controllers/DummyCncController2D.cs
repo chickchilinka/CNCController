@@ -25,5 +25,8 @@ namespace CNC_CAD.CNC.Controllers
             });
             thread.Start(); 
         }
+        public override void Stop()
+        {
+        }
     }
 }

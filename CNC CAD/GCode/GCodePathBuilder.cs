@@ -19,7 +19,7 @@ namespace CNC_CAD.GCode
         {
             List<string> commands = new();
             ICurve lastCurve = null;
-            commands.AddRange(WithAbsoluteMove(_config, _pathShape.StartPoint)
+            commands.AddRange(WithAbsoluteMove(_config, _pathShape.ToGlobalPoint(_pathShape.StartPoint))
                 .SetHeadDownAtStart(false)
                 .SetHeadDownAtEnd(true)
                 .Build());
@@ -27,7 +27,7 @@ namespace CNC_CAD.GCode
             {
                 if (lastCurve != null && lastCurve.EndPoint != curve.StartPoint)
                 {
-                    commands.AddRange(WithAbsoluteMove(_config, curve.StartPoint)
+                    commands.AddRange(WithAbsoluteMove(_config, curve.ToGlobalPoint(curve.StartPoint))
                         .SetHeadDownAtStart(false)
                         .SetHeadDownAtEnd(true)
                         .SetFastTravel(true)

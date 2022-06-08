@@ -14,7 +14,7 @@ namespace CNC_CAD
         public static int ShapeID = 0;
         public static CncConfig currentCNCConfig = new CncConfig()
         {
-            HeadDown = -135d,
+            HeadDown = -55,
             COMPort = "COM4",
             BaudRate = 115200
         };

@@ -10,7 +10,7 @@ using CNC_CAD.Shapes;
 
 namespace CNC_CAD.Tools
 {
-    public class SvgPathDataParser
+    public class SvgPathDataParser:SvgElementParser<PathShape>
     {
         private Vector _startPoint;
         private Vector _currentPoint;
@@ -18,13 +18,11 @@ namespace CNC_CAD.Tools
         private List<ICurve> _curves;
         private string lastCommand;
         private Vector _lastSubpath;
-        public PathShape CreatePath(XmlElement element, PathShape last = null)
+        public override PathShape Create(XmlElement element)
         {
             _curves = new List<ICurve>();
             var data = element.GetAttribute("d");
             var id = element.GetAttribute("id");
-            double strokeWidth = 1;
-            double.TryParse(element.GetAttribute("stroke-width"), out strokeWidth);
             var separators = @"(?=[MZLHVCSQTAmzlhvcsqta])";
             var tokens = Regex.Split(data, separators).Where(t => !string.IsNullOrEmpty(t)).ToArray();
             var args = GetCommandArguments(tokens[0]);
@@ -39,7 +37,7 @@ namespace CNC_CAD.Tools
                 _currentPoint = _curves[^1].EndPoint;
                 lastCommand = tokens[0];
             }
-
+            
 
             for (var i = 1; i < tokens.Length; i++)
             {
@@ -49,7 +47,10 @@ namespace CNC_CAD.Tools
                 lastCommand = tokens[i];
             }
 
-            return new PathShape(data, id, _curves, returnedToStart ? _startPoint : null);
+            return new PathShape(data, id, _curves, returnedToStart ? _startPoint : null)
+            {
+                TransformationMatrix = GetTransformationMatrixFromXml(element)
+            };
         }
 
         private ICurve GetCurveForCommand(string command)
@@ -159,17 +160,6 @@ namespace CNC_CAD.Tools
             }
             _lastSubpath = _currentPoint;
             return null;
-        }
-
-        public double[] GetCommandArguments(string command)
-        {
-            var find = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+\\-]?\\d+)?";
-            var tokens = Regex.Matches(command.Substring(1, command.Length - 1), find)
-                .Where(t => !string.IsNullOrEmpty(t.Value)).ToArray();
-            var args = new double[tokens.Length];
-            for (int i = 0; i < tokens.Length; i++)
-                args[i] = double.Parse(tokens[i].Value, new CultureInfo("en-EN"));
-            return args;
         }
     }
 }

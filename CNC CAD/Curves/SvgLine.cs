@@ -12,6 +12,8 @@ namespace CNC_CAD.Curves
         private SvgLine continuation;
         public Vector EndPoint => continuation?.EndPoint ?? _endPoint;
 
+        public double Length => ToGlobalPoint(_endPoint - StartPoint).Length + continuation?.Length ?? 0;
+
         public enum Direction
         {
             Horizontal,
@@ -69,8 +71,10 @@ namespace CNC_CAD.Curves
 
         public List<Vector> Linearize(AccuracySettings accuracy)
         {
-            var result = new List<Vector> { _endPoint };
-            result.AddRange(continuation?.Linearize(accuracy) ?? new List<Vector>());
+            var result = new List<Vector> { ToGlobalPoint(_endPoint) };
+            if (continuation == null) return result;
+            continuation.Parent = this.Parent;
+            result.AddRange(continuation.Linearize(accuracy));
             return result;
         }
     }

@@ -22,8 +22,11 @@ namespace CNC_CAD.Curves
         private readonly bool _fs;
         private double _cx, _cy;
         private SvgArc continuation;
+        private double length;
+        public double Length => length + continuation?.Length ?? 0;
         public Vector StartPoint => new(_x1, _y1);
         public Vector EndPoint => continuation?.EndPoint ?? new(_x2, _y2);
+        
         
         public double Tetha1 { get; private set; }
         public double Dtetha { get; private set; }
@@ -131,15 +134,17 @@ namespace CNC_CAD.Curves
         public List<Vector> Linearize(AccuracySettings accuracy)
         {
             var points = new List<Vector>();
-            for (double i = 0; Math.Abs(i) <= Math.Abs(Dtetha); i += Math.Sign(Dtetha)*accuracy.AngleAccuracy)
+            var lastPoint = GetPointOnArcAngle(0);
+            length = 0;
+            for (double i = Math.Sign(Dtetha)*accuracy.AngleAccuracy; Math.Abs(i) <= Math.Abs(Dtetha); i += Math.Sign(Dtetha)*accuracy.AngleAccuracy)
             {
                 points.Add(GetPointOnArcAngle(i));
+                length += (points[^1] - lastPoint).Length;
             }
             points.Add(new Vector(_x2, _y2));
-            if (continuation != null)
-            {
-                points.AddRange(continuation.Linearize(accuracy));
-            }
+            if (continuation == null) return points;
+            continuation.Parent = this.Parent;
+            points.AddRange(continuation.Linearize(accuracy));
             return points;
         }
     }

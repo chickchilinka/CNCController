@@ -17,6 +17,14 @@ namespace CNC_CAD.Operations
             operation.Execute();
         }
 
+        public void Stop()
+        {
+            var curOperation = _operations.Peek();
+            if (curOperation is IInterruptable interruptable)
+            {
+                interruptable.Stop();
+            }
+        }
         public void Undo()
         {
             if(_operations.Count==0)

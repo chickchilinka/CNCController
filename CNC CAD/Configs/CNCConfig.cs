@@ -13,13 +13,15 @@ namespace CNC_CAD.Configs
         public double HeadUp = 0;
         public double HeadDown;
         public string COMPort;
-        public double BaseFeedRate = 100;
+        public double BaseFeedRate = 3000;
+        public double PxToMMFactor = 0.4d;
         public int BaudRate;
-        public AccuracySettings AccuracySettings = new AccuracySettings(10, 0.2d);
+        public AccuracySettings AccuracySettings = new AccuracySettings(20, 0.2d, 20);
         public WorksheetConfig WorksheetConfig = new WorksheetConfig();
 
         public Vector ConvertVectorToPhysical(Vector position)
         {
+            position = position * PxToMMFactor;
             double x = position.X;
             double y = position.Y;
             if (InvertY)

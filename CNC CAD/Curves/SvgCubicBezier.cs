@@ -14,6 +14,8 @@ namespace CNC_CAD.Curves
         private SvgCubicBezier continuation;
         public Vector StartPoint => P0;
         public Vector EndPoint  => continuation?.EndPoint ?? P3;
+        private double _length;
+        public double Length => _length + continuation?.Length ?? 0;
         
         public SvgCubicBezier(double[] args, Vector _start, bool relative = false)
         {
@@ -74,13 +76,30 @@ namespace CNC_CAD.Curves
             {
                 points.Add(GetPointAt(i));
             }
-            points.Add(P3);
+            points.Add(ToGlobalPoint(P3));
+            points = OptimizePoints(points, accuracy);
+            if (continuation == null) return points;
+            continuation.Parent = this.Parent;
+            points.AddRange(continuation.Linearize(accuracy));
 
-            if (continuation != null)
+            return points;
+        }
+        
+        private List<Vector> OptimizePoints(List<Vector> points, AccuracySettings accuracySettings)
+        {
+            double sum = (ToGlobalPoint(StartPoint)-points[0]).Length;
+            for (int i = 1; i < points.Count; i++)
             {
-                points.AddRange(continuation.Linearize(accuracy));
+                sum += (points[i] - points[i - 1]).Length;
             }
 
+            double stepSize = accuracySettings.AccuracyPer10MM/(sum*10);
+            points.Clear();
+            for (double i = 0; i <= 1d; i += stepSize)
+            {
+                points.Add(GetPointAt(i));
+            }
+            points.Add(ToGlobalPoint(P3));
             return points;
         }
     }
