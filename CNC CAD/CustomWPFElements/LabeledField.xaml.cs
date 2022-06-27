@@ -1,4 +1,8 @@
+using System;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using System.Windows.Input;
+using CNC_CAD.Tools;
 
 namespace CNC_CAD.CustomWPFElements
 {
@@ -9,7 +13,29 @@ namespace CNC_CAD.CustomWPFElements
             InitializeComponent();
         }
 
-        public string Value => InputBox.Text;
+        private bool _numericOnly = true;
+
+        public bool NumericOnly
+        {
+            get => _numericOnly;
+            set => _numericOnly = value;
+        }
+        public string Value
+        {
+            get => InputBox.Text;
+            set => InputBox.Text = value;
+        }
+
+        public double NumericValue
+        {
+            get
+            {
+                var substring = Value;
+                if (Value[^1] == '.')
+                    substring = Value.Substring(0, Value.Length - 1);
+                return double.Parse(substring);
+            }
+        }
 
         public string FieldName
         {
@@ -27,6 +53,16 @@ namespace CNC_CAD.CustomWPFElements
         {
             get => InputBox.Width;
             set => InputBox.Width = value;
+        }
+        
+        private void InputBox_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (_numericOnly)
+            {
+                var text = InputBox.Text + e.Text;
+                e.Handled = !Regex.IsMatch(text, Const.RegexPatterns.DecimalMatcher);
+            }
+            else e.Handled = false;
         }
     }
 }

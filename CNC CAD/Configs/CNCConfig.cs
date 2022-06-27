@@ -14,7 +14,7 @@ namespace CNC_CAD.Configs
         public double HeadDown;
         public string COMPort;
         public double BaseFeedRate = 3000;
-        public double PxToMMFactor = 0.4d;
+        public double PxToMMFactor = 1d;
         public int BaudRate;
         public AccuracySettings AccuracySettings = new AccuracySettings(20, 0.2d, 20);
         public WorksheetConfig WorksheetConfig = new WorksheetConfig();

@@ -23,6 +23,8 @@ namespace CNC_CAD.Shapes
         private Vector? _start;
         private Vector? _end;
         public double Length { get; }
+        
+        
 
         public Vector StartPoint
         {
@@ -111,6 +113,5 @@ namespace CNC_CAD.Shapes
             WpfShapes.AddRange(shape2.WpfShapes);
             Curves.AddRange(shape2.Curves);
         }
-        
     }
 }

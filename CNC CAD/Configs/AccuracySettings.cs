@@ -2,7 +2,7 @@ namespace CNC_CAD.Configs
 {
     public struct AccuracySettings
     {
-        public static double MaxAccuracyPer10MM = 0.01d;
+        public static double MaxAccuracyPer10MM = 100d;
         public double AngleAccuracy;
         public double RelativeAccuracy;
         public double AccuracyPer10MM;

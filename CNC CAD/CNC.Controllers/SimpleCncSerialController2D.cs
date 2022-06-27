@@ -14,6 +14,10 @@ using Vector = System.Windows.Vector;
 
 namespace CNC_CAD.CNC.Controllers
 {
+    public class NotCompleteMessageException : Exception
+    {
+        public NotCompleteMessageException(string message) : base(message){}
+    }
     public class SimpleCncSerialController2D : AbstractController2D
     {
         private Logger _logger = Logger.CreateForClass(typeof(DummyCncController2D));
@@ -56,7 +60,7 @@ namespace CNC_CAD.CNC.Controllers
         {
             string[] substrings = data.Split('|');
             if (substrings.Length < 2)
-                throw new Exception("No response from cnc machine");
+                throw new NotCompleteMessageException("No response from cnc machine");
             double[] args = SvgElementParser<PathShape>.GetCommandArguments(substrings[1]);
             return new((float) args[0], (float) args[1], (float) args[2]);
         }
@@ -73,19 +77,28 @@ namespace CNC_CAD.CNC.Controllers
                 if (command.StartsWith("G01") || command.StartsWith("G00"))
                 {
                     var commandPosArgs = SvgElementParser<PathShape>.GetCommandArguments(command.Remove(0, 3));
-                    if (commandPosArgs.Length == 0)
-                        return;
-                    if (commandPosArgs.Length == 1 && command.ToLower().Contains("z"))
+                    try
                     {
-                        if (CheckZPosition(commandPosArgs[0], controller))
+                        if (commandPosArgs.Length == 0)
                             return;
-                    }
+                        if (commandPosArgs.Length == 1 && command.ToLower().Contains("z"))
+                        {
+                            if (CheckZPosition(commandPosArgs[0], controller))
+                                return;
+                        }
 
-                    if (commandPosArgs.Length >= 2 && command.ToLower().Contains("y") &&
-                        command.ToLower().Contains("x"))
+                        if (commandPosArgs.Length >= 2 && command.ToLower().Contains("y") &&
+                            command.ToLower().Contains("x"))
+                        {
+                            if (CheckXYPosition(new Vector(commandPosArgs[0], commandPosArgs[1]), controller))
+                                return;
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        if (CheckXYPosition(new Vector(commandPosArgs[0], commandPosArgs[1]), controller))
-                            return;
+                        _logger.Log(ex.StackTrace);
+                        Thread.Sleep(50);
+                        continue;
                     }
                 }
                 else

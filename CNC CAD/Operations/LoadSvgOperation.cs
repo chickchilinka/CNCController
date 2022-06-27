@@ -24,7 +24,7 @@ namespace CNC_CAD.Operations
             {
                 InitialDirectory = "c:\\",
                 Filter = "Scalable vector graphics (*.svg)|*.svg|All files (*.*)|*.*",
-                FilterIndex = 2,
+                FilterIndex = 1,
                 RestoreDirectory = true
             };
             if (openFileDialog.ShowDialog()==true)

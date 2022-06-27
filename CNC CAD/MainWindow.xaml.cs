@@ -6,10 +6,13 @@ using System.Windows;
 using System.Windows.Controls.Ribbon;
 using CNC_CAD.Base;
 using CNC_CAD.CNC.Controllers;
+using CNC_CAD.Configs;
 using CNC_CAD.Curves;
 using CNC_CAD.DrawShapeWindows;
+using CNC_CAD.Observers;
 using CNC_CAD.Operations;
 using CNC_CAD.Tools;
+using CNC_CAD.Windows;
 using CNC_CAD.Workspaces;
 
 namespace CNC_CAD
@@ -22,7 +25,8 @@ namespace CNC_CAD
         private readonly Logger _logger;
         private readonly Workspace _workspace;
         private readonly OperationsHistory _operationsHistory;
-        public MainWindow()
+        private MouseObserver _mouseObserver;
+        public MainWindow(CncConfig config)
         {
             InitializeComponent();
             _logger = Logger.CreateFor(this);
@@ -30,16 +34,10 @@ namespace CNC_CAD
             _workspace = new Workspace();
             _operationsHistory = new OperationsHistory();
             WorkspaceScrollView.Content = _workspace.Workspace2D;
-            var controller = SimpleSerialController.CreateSerialController(App.currentCNCConfig);
-            _logger.Log("Executing:");
-            Thread thread = new Thread(() =>
+            _mouseObserver = MouseObserver.CreateMouseObserver(config, _workspace.Workspace2D, (text) =>
             {
-                controller.SendString("?");
-                _logger.Log(controller.Read());
-                //_logger.Log("End of commands execution");
-                controller.Dispose();
+                MousePositionText.Text = text;
             });
-            thread.Start();
         }
 
         private void ButtonCreateArc3Points_OnClick(object sender, RoutedEventArgs e)
@@ -73,6 +71,12 @@ namespace CNC_CAD
         private void Undo_OnClick(object sender, RoutedEventArgs e)
         {
             _operationsHistory.Undo();
+        }
+
+        private void Configure_OnClick(object sender, RoutedEventArgs e)
+        {
+            ConfigurationWindow window = new ConfigurationWindow(App.currentCNCConfig);
+            window.Show();
         }
     }
 }

@@ -42,8 +42,7 @@ namespace CNC_CAD.Tools
 
         public static double[] GetCommandArguments(string command)
         {
-            var find = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+\\-]?\\d+)?";
-            var tokens = Regex.Matches(command.Substring(1, command.Length - 1), find)
+            var tokens = Regex.Matches(command.Substring(1, command.Length - 1), Const.RegexPatterns.DecimalsSearchMatcher)
                 .Where(t => !string.IsNullOrEmpty(t.Value)).ToArray();
             var args = new double[tokens.Length];
             for (int i = 0; i < tokens.Length; i++)

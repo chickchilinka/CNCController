@@ -14,16 +14,21 @@ namespace CNC_CAD
         public static int ShapeID = 0;
         public static CncConfig currentCNCConfig = new CncConfig()
         {
-            HeadDown = -55,
-            COMPort = "COM4",
+            HeadDown = -105,
+            COMPort = "COM5",
             BaudRate = 115200
         };
+
+        private MainWindow _mainWindow;
         public App()
         {
             if (ShowConsole)
             {
                 ConsoleManager.Show();
             }
+
+            _mainWindow = new MainWindow(currentCNCConfig);
+            _mainWindow.Show();
         }
     }
 }

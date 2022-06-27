@@ -5,8 +5,20 @@ namespace CNC_CAD.Curves
 {
     public abstract class Transform
     {
-        public Matrix TransformationMatrix { get; set; } = Matrix.Identity;
-        public Transform Parent { get; set; }
+        protected Matrix _transformationMatrix = Matrix.Identity;
+        public virtual Matrix TransformationMatrix
+        {
+            get => _transformationMatrix;
+            set => _transformationMatrix = value;
+        }
+        public virtual Matrix FinalMatrix => TransformationMatrix * (Parent?.FinalMatrix ?? Matrix.Identity);
+        
+        protected Transform _parent;
+        public virtual Transform Parent
+        {
+            get => _parent;
+            set => _parent = value;
+        }
         public virtual Vector ToGlobalPoint(Vector point)
         {
             if (Parent == null)

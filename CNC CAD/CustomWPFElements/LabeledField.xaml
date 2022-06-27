@@ -13,7 +13,8 @@
             <TextBox x:Name="InputBox"
                      HorizontalAlignment="Left"
                      Height="20"
-                     Width="100"></TextBox>
+                     Width="100"
+                     PreviewTextInput="InputBox_OnPreviewTextInput"/>
         </StackPanel>
     </Grid>
 </UserControl>
