@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Fluent.Ribbon" Version="9.0.4" />
+      <PackageReference Include="System.IO.Ports" Version="5.0.1" />
+      <PackageReference Include="System.Management" Version="6.0.0" />
+      <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\net6.0-windows" />
+      <Folder Include="Machine" />
+      <Folder Include="RibbonElements" />
+      <Folder Include="UI" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="bin\Debug\net6.0-windows\Images\ImportButton_16x.png" />
+      <None Include="bin\Debug\net6.0-windows\Images\RunTest_16x.png" />
+      <None Include="bin\Debug\net6.0-windows\Images\Run_16x.png" />
+      <None Include="bin\Debug\net6.0-windows\Images\Undo_16x.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Images\ImportButton_16x.png" />
+      <Resource Include="Images\ImportButton_16x.png" />
+      <None Remove="Images\Run_16x.png" />
+      <Resource Include="Images\Run_16x.png" />
+      <None Remove="Images\RunTest_16x.png" />
+      <Resource Include="Images\RunTest_16x.png" />
+      <None Remove="Images\Undo_16x.png" />
+      <Resource Include="Images\Undo_16x.png" />
+    </ItemGroup>
+
+</Project>
