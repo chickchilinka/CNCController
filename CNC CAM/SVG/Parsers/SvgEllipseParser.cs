@@ -26,7 +26,7 @@ public class SvgEllipseParser:SvgPathDataParser
         {
             rx = ry;
         }
-        var pathData = $"M {cx-rx},{cy-ry} a {rx},{ry} 0 1 0 {rx*2},0 a {rx},{ry} 0 1 0 {-rx*2},0";
+        var pathData = $"M {cx-rx},{cy} a {rx},{ry} 0 1 0 {rx*2},0 a {rx},{ry} 0 1 0 {-rx*2},0";
         var curves = GetCurves(pathData);
         return new SvgEllipse(pathData, GetId(element), curves)
         {

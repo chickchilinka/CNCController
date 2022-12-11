@@ -9,7 +9,7 @@ namespace CNC_CAM.SVG.Subpaths
     /// Implementation of w3 SVG Path Arc
     /// used: https://mortoray.com/2017/02/16/rendering-an-svg-elliptical-arc-as-bezier-curves/
     /// </summary>
-    public class SvgArc:Subpath
+    public class SvgArc : Subpath
     {
         private readonly double _x1;
         private readonly double _y1;
@@ -26,8 +26,8 @@ namespace CNC_CAM.SVG.Subpaths
         public override double Length => length + continuation?.Length ?? 0;
         public override Vector StartPoint => new(_x1, _y1);
         public override Vector EndPoint => continuation?.EndPoint ?? new(_x2, _y2);
-        
-        
+
+
         public double Tetha1 { get; private set; }
         public double Dtetha { get; private set; }
 
@@ -47,23 +47,26 @@ namespace CNC_CAM.SVG.Subpaths
                 _x2 += startPoint.X;
                 _y2 += startPoint.Y;
             }
+
             DetectContinuation(arguments, relative);
             EndpointToCenterArcParams();
         }
+
         public void DetectContinuation(double[] arguments, bool relative)
         {
-            if (arguments.Length > 7 )
+            if (arguments.Length > 7)
             {
                 if (arguments.Length % 7 != 0)
                 {
                     throw new Exception("Invalid arguments count");
                 }
 
-                double[] continArgs = new double[arguments.Length-7];
-                Array.Copy(arguments, 7, continArgs, 0, arguments.Length-7);
+                double[] continArgs = new double[arguments.Length - 7];
+                Array.Copy(arguments, 7, continArgs, 0, arguments.Length - 7);
                 continuation = new SvgArc(continArgs, new Vector(_x2, _y2), relative);
             }
         }
+
         private void EndpointToCenterArcParams()
         {
             double rX = Math.Abs(_rx);
@@ -123,24 +126,29 @@ namespace CNC_CAM.SVG.Subpaths
             return ang;
         }
 
-        public Vector GetPointOnArcAngle(double angleInRad)
+        public override Vector GetPointAt(double relative)
         {
+            var angleInRad = relative * Dtetha;
             var radFromStart = Tetha1 + angleInRad;
-            var x = Math.Cos(_angle) * _rx * Math.Cos(radFromStart) - Math.Sin(_angle) * _ry * Math.Sin(radFromStart) + _cx;
-            var y = Math.Sin(_angle) * _rx * Math.Cos(radFromStart) + Math.Cos(_angle) * _ry * Math.Sin(radFromStart) + _cy;
+            var x = Math.Cos(_angle) * _rx * Math.Cos(radFromStart) - Math.Sin(_angle) * _ry * Math.Sin(radFromStart) +
+                    _cx;
+            var y = Math.Sin(_angle) * _rx * Math.Cos(radFromStart) + Math.Cos(_angle) * _ry * Math.Sin(radFromStart) +
+                    _cy;
             return ToGlobalPoint(new Vector(x, y));
         }
 
         public override List<Vector> Linearize(AccuracySettings accuracy)
         {
             var points = new List<Vector>();
-            var lastPoint = GetPointOnArcAngle(0);
+            var lastPoint = GetPointAt(0);
+            points.Add(lastPoint);
             length = 0;
-            for (double i = Math.Sign(Dtetha)*accuracy.AngleAccuracy; Math.Abs(i) <= Math.Abs(Dtetha); i += Math.Sign(Dtetha)*accuracy.AngleAccuracy)
-            {
-                points.Add(GetPointOnArcAngle(i));
-                length += (points[^1] - lastPoint).Length;
-            }
+            // for (double i = Math.Sign(Dtetha)*accuracy.AngleAccuracy; Math.Abs(i) <= Math.Abs(Dtetha); i += Math.Sign(Dtetha)*accuracy.AngleAccuracy)
+            // {
+            //     points.Add(GetPointAt(i));
+            //     length += (points[^1] - lastPoint).Length;
+            // }
+            points.AddRange(this.GetPointsBetween(0, 1, accuracy));
             points.Add(new Vector(_x2, _y2));
             if (continuation == null) return points;
             continuation.Parent = this.Parent;

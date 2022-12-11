@@ -3,6 +3,7 @@ using CNC_CAM.Machine.Configs;
 using CNC_CAM.Tools;
 using CNC_CAM.Tools.Serialization;
 using CNC_CAM.UI.Windows;
+using DryIoc;
 
 namespace CNC_CAM
 {
@@ -28,6 +29,8 @@ namespace CNC_CAM
             Exit += SaveData;
             _mainWindow = new MainWindow(CurrentCNCConfig);
             _mainWindow.Show();
+            Container container = new Container();
+            container.Register<SimpleSerializer>(Reuse.Singleton);
         }
 
         private void LoadData()

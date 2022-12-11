@@ -18,7 +18,7 @@ namespace CNC_CAM.Shapes
             get => _transformationMatrix;
             set
             {
-                _transformationMatrix = value;
+                base.TransformationMatrix = value;
                 ApplyTransformationMatrixToWpf();
             }
         }
@@ -32,14 +32,14 @@ namespace CNC_CAM.Shapes
                 ApplyTransformationMatrixToWpf();
             }
         }
-
+//TODO:создать абстрактную фабрику операций по рисованию, сделать реализацию для станка с ручкой/карандашом, убрать данный метод
         public abstract List<GCodeCommand> GenerateGCodeCommands(CncConfig config);
-
+        // TODO:так же через фабрику
         public virtual List<WPFShape> GetControlShapes()
         {
             return WpfShapes;
         }
-
+//TODO: сделать для каждого типа shape универсальный View класс, наследюущий WpfShape, фабрику и пул данных вьюшек   
         protected virtual void ApplyTransformationMatrixToWpf()
         {
             foreach (var wpfShape in WpfShapes)

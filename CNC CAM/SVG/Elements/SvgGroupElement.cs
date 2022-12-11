@@ -8,6 +8,8 @@ namespace CNC_CAM.SVG.Elements
     public class SvgGroupElement:SvgElement, IGroup<SvgElement>
     {
         public List<SvgElement> Children { get; }= new();
+        
+        //TODO:Так же отделить сущность от представления
         public override List<WpfShape> GetControlShapes()
         {
             var shapesList = new List<WpfShape>();
@@ -17,7 +19,7 @@ namespace CNC_CAM.SVG.Elements
             }
             return shapesList;
         }
-
+        //TODO:Так же отделить сущность от представления для станка
         public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
         {
             var commands = new List<GCodeCommand>();

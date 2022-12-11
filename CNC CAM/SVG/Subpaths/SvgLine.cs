@@ -69,6 +69,11 @@ namespace CNC_CAM.SVG.Subpaths
             }
         }
 
+        public override Vector GetPointAt(double point)
+        {
+            return (1 - point) * StartPoint + point * _endPoint;
+        }
+
         public override List<Vector> Linearize(AccuracySettings accuracy)
         {
             var result = new List<Vector> { ToGlobalPoint(_endPoint) };

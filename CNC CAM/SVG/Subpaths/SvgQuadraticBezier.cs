@@ -52,7 +52,7 @@ namespace CNC_CAM.SVG.Subpaths
             P2 = p2;
         }
 
-        public Vector GetPointAt(double t)
+        public override Vector GetPointAt(double t)
         {
             return ToGlobalPoint(Math.Pow(1 - t, 2) * P0 + 2 * t * (1 - t) * P1 + t * t * P2);
         }
@@ -67,14 +67,16 @@ namespace CNC_CAM.SVG.Subpaths
 
         public override List<Vector> Linearize(AccuracySettings accuracy)
         {
-            var points = new List<Vector>();
-            for (double i = 0; i <= 1d; i += accuracy.RelativeAccuracy)
-            {
-                points.Add(GetPointAt(i));
-            }
-
-            points.Add(ToGlobalPoint(P2));
-            points = OptimizePoints(points, accuracy);
+            var points = new List<Vector>() { GetPointAt(0) };
+            points.AddRange(this.GetPointsBetween(0, 1, accuracy));
+            points.Add(GetPointAt(1));
+            // for (double i = 0; i <= 1d; i += accuracy.RelativeAccuracy)
+            // {
+            //     points.Add(GetPointAt(i));
+            // }
+            //
+            // points.Add(ToGlobalPoint(P2));
+            // points = OptimizePoints(points, accuracy);
             if (continuation == null) return points;
             continuation.Parent = this.Parent;
             points.AddRange(continuation.Linearize(accuracy));
@@ -90,7 +92,7 @@ namespace CNC_CAM.SVG.Subpaths
                 sum += (points[i] - points[i - 1]).Length;
             }
 
-            double stepSize = accuracySettings.AccuracyPer10MM / (sum * 10);
+            double stepSize = accuracySettings.Accuracy / (sum * 10);
             points.Clear();
             for (double i = 0; i <= 1d; i += stepSize)
             {

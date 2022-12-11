@@ -16,8 +16,11 @@ namespace CNC_CAM.SVG.Parsers
         private List<SvgElement> GetChildren(XmlElement svgElement, SvgElement parent=null)
         {
             var list = new List<SvgElement>();
-            foreach (XmlElement childNode in svgElement)
+            foreach (var node in svgElement)
             {
+                XmlElement childNode = node as XmlElement;
+                if(childNode==null)
+                    continue;
                 var element = SvgParsersFactory.Parse(childNode);
                 if (element != null)
                 {

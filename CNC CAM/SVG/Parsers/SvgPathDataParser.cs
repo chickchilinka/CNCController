@@ -18,6 +18,7 @@ namespace CNC_CAM.SVG.Parsers
         private bool returnedToStart = false;
         private string lastCommand;
         private Vector _lastSubpath;
+        private SvgCubicBezier _lastCubicBezier;
         public override SvgPath Create(XmlElement element)
         {
             _curves = new List<ICurve>();
@@ -107,6 +108,12 @@ namespace CNC_CAM.SVG.Parsers
                 case 'q':
                     curve = new SvgQuadraticBezier(args, _currentPoint, true);
                     break;
+                case 'S':
+                    curve = new SvgCubicBezierShort(args, _lastCubicBezier, _currentPoint);
+                    break;
+                case 's':
+                    curve = new SvgCubicBezierShort(args, _lastCubicBezier, _currentPoint, true);
+                    break;
                 case 'Z':
                 case 'z':
                     if (lastCommand[0] == 'm' || lastCommand[0] == 'M')
@@ -125,7 +132,9 @@ namespace CNC_CAM.SVG.Parsers
             {
                 _currentPoint = curve.EndPoint;
             }
-
+            
+            _lastCubicBezier = curve as SvgCubicBezier;
+            
             return curve;
         }
 

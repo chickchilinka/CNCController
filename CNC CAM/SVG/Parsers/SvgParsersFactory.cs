@@ -14,6 +14,7 @@ public class SvgParsersFactory
         RegisterParser<SvgParser>("svg");
         RegisterParser<SvgPathDataParser>("path");
         RegisterParser<SvgPolylineParser<SvgPolyline>>("polyline");
+        RegisterParser<SvgLineParser>("line");
         RegisterParser<SvgPolylineParser<SvgPolygon>>("polygon");
         RegisterParser<SvgRectParser>("rect");
         RegisterParser<SvgEllipseParser>("ellipse");

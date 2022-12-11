@@ -19,7 +19,7 @@ public static class Const
     public static class Configs
     {
 
-        public static readonly AccuracySettings DefaultAccuracy = new AccuracySettings(Math.PI/12d, 0.2d, 20);
+        public static readonly AccuracySettings DefaultAccuracy = new AccuracySettings(Math.PI/12d, 0.2d, 1);
         public static readonly CncConfig DefaultCncConfig = new CncConfig()
         {
             HeadDown = -105,
