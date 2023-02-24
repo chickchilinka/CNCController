@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,8 +11,17 @@ namespace CNC_CAM.UI.CustomWPFElements
         public LabeledField()
         {
             InitializeComponent();
+            InputBox.TextChanged+=InputBoxOnTextChanged;
         }
 
+        private void InputBoxOnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            OnChanged?.Invoke(Value);
+            OnChangedNumeric?.Invoke(NumericValue);
+        }
+
+        public event Action<string> OnChanged;
+        public event Action<double> OnChangedNumeric;
         private bool _numericOnly = true;
 
         public bool NumericOnly
@@ -29,10 +39,17 @@ namespace CNC_CAM.UI.CustomWPFElements
         {
             get
             {
-                var substring = Value;
-                if (Value[^1] == '.')
-                    substring = Value.Substring(0, Value.Length - 1);
-                return double.Parse(substring);
+                try
+                {
+                    var substring = Value;
+                    if (Value[^1] == '.')
+                        substring = Value.Substring(0, Value.Length - 1);
+                    return double.Parse(substring);
+                }
+                catch
+                {
+                    return 0;
+                }
             }
         }
 

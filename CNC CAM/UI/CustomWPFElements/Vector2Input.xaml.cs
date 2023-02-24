@@ -1,5 +1,7 @@
+using System;
 using System.Numerics;
 using System.Windows.Controls;
+using DryIoc.ImTools;
 
 namespace CNC_CAM.UI.CustomWPFElements
 {
@@ -10,7 +12,17 @@ namespace CNC_CAM.UI.CustomWPFElements
             InitializeComponent();
             Panel.Orientation = _orientation;
             GroupBox.Header = _header;
+            XBox.TextChanged += Changed;
+            YBox.TextChanged += Changed;
         }
+
+        private void Changed(object sender, TextChangedEventArgs e)
+        {
+            OnChangeValue?.Invoke(Value);
+        }
+
+        public event Action<Vector2> OnChangeValue;
+
         private Orientation _orientation;
 
         public Orientation Orientation
@@ -34,6 +46,17 @@ namespace CNC_CAM.UI.CustomWPFElements
                 GroupBox.Header = _header;
             }
         }
+        
+        public string XName
+        {
+            get => XLabel.Content.ToString();
+            set => XLabel.Content = value;
+        }
+        public string YName
+        {
+            get => YLabel.Content.ToString();
+            set => YLabel.Content = value;
+        }
 
         public Vector2 Value
         {
@@ -47,6 +70,11 @@ namespace CNC_CAM.UI.CustomWPFElements
                 {
                     X = x, Y = y
                 };
+            }
+            set
+            {
+                XBox.Text = value.X.ToString();
+                YBox.Text = value.Y.ToString();
             }
         }
     }

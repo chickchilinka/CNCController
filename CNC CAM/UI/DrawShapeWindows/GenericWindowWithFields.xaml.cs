@@ -5,11 +5,11 @@ using System.Windows.Controls;
 
 namespace CNC_CAM.UI.DrawShapeWindows
 {
-    public partial class DrawShapeWindow : Window
+    public partial class GenericWindowWithFields
     {
         private Action _onSubmit;
         private Action _onCancel;
-        public DrawShapeWindow(List<Control> fields, Action onSubmit, Action onCancel)
+        public GenericWindowWithFields(List<Control> fields, Action onSubmit, Action onCancel)
         {
             _onSubmit = onSubmit;
             _onCancel = onCancel;

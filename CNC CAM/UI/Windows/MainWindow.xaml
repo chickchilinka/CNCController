@@ -3,8 +3,8 @@
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:local="clr-namespace:CNC_CAM"
                      xmlns:fluent="urn:fluent-ribbon"
+                     xmlns:custom="clr-namespace:CNC_CAM.UI.CustomWPFElements"
                      mc:Ignorable="d"
                      Title="MainWindow" WindowState="Maximized" Height="450" Width="800">
     <Grid>
@@ -16,30 +16,36 @@
         <fluent:Ribbon x:Name="MainRibbon">
             <fluent:Ribbon.QuickAccessItems>
             </fluent:Ribbon.QuickAccessItems>
-            <fluent:RibbonTabItem x:Name="MainTab" Header="Main">
+            <fluent:RibbonTabItem Padding="10 0 10 0" Background="RoyalBlue" Foreground="White" x:Name="File"
+                                  Header="File">
+                <fluent:RibbonGroupBox Header="Project">
+                    <fluent:Button x:Name="OpenProject"
+                                   Header="Open" />
+                    <fluent:Button x:Name="CreateProject"
+                                   Header="Create" />
+                    <fluent:Button x:Name="SaveProject"
+                                   Header="Save" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="MainTab" Header="Main">
                 <fluent:RibbonGroupBox Header="Operations">
                     <fluent:Button x:Name="Undo"
                                    Header="Undo"
                                    Icon="/CNC CAM;component/Images/Undo_16x.png"
                                    Click="Undo_OnClick" />
                 </fluent:RibbonGroupBox>
-            </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem x:Name="ModelingTab" Header="Modeling">
                 <fluent:RibbonGroupBox x:Name="Import" Header="Import">
                     <fluent:Button x:Name="ImportSvg"
                                    Header="SVG"
                                    Icon="/CNC CAM;component/Images/ImportButton_16x.png"
                                    Click="ImportSvg_OnClick" />
                 </fluent:RibbonGroupBox>
-                <!-- <fluent:RibbonGroupBox x:Name="PrimitivesGroup" Header="Primitives"> -->
-                <!--     <fluent:SplitButton Header="Arc"> -->
-                <!--         <fluent:Button Header="3 points" Click="ButtonCreateArc3Points_OnClick"> </fluent:Button> -->
-                <!--         <fluent:Button Header="Start, center, end" KeyTip="T" /> -->
-                <!--         <fluent:Button Header="Center, radius, angle" KeyTip="S" /> -->
-                <!--     </fluent:SplitButton> -->
-                <!-- </fluent:RibbonGroupBox> -->
+                <fluent:RibbonGroupBox Header="Safety Area">
+                    <custom:LabeledField FieldName="Width"  NumericOnly="True" x:Name="SafeAreaWidth"></custom:LabeledField>
+                    <custom:LabeledField FieldName="Height" NumericOnly="True" x:Name="SafeAreaHeight"></custom:LabeledField>
+                </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem x:Name="MachineTab" Header="Machine">
+            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="MachineTab" Header="Machine">
                 <fluent:RibbonGroupBox x:Name="Start" Header="Send to machine">
                     <fluent:Button x:Name="StartDraw"
                                    Header="Test draw"
@@ -56,6 +62,12 @@
                                    Click="Configure_OnClick" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
+            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="HelpTab" Header="Help">
+                <fluent:RibbonGroupBox>
+                    <fluent:Button x:Name="AboutBtn"
+                                   Header="About" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
 
         </fluent:Ribbon>
 
@@ -63,12 +75,12 @@
         </ScrollViewer>
         <fluent:StatusBar Grid.Row="2">
             <fluent:StatusBarItem HorizontalAlignment="Right">
-                <fluent:TextBox 
+                <fluent:TextBox
                     x:Name="MousePositionText">
                 </fluent:TextBox>
             </fluent:StatusBarItem>
             <fluent:StatusBarItem HorizontalAlignment="Right">
-                <fluent:TextBox 
+                <fluent:TextBox
                     x:Name="GridSize" MouseDoubleClick="GridSize_OnMouseDoubleClick">
                 </fluent:TextBox>
             </fluent:StatusBarItem>

@@ -13,6 +13,18 @@ public class WpfSignals
             GridSize = gridSize;
         }
     }
+    
+    public class SetSafetyAreaSize
+    {
+        public float Width { get; }
+        public float Height { get; }
+
+        public SetSafetyAreaSize(float width, float height)
+        {
+            Width = width;
+            Height = height;
+        }
+    }
 
     public class MouseMoved
     {

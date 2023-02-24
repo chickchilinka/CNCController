@@ -9,6 +9,7 @@ namespace CNC_CAM.UI.CustomWPFElements
     public partial class Workspace2D : UserControl
     {
         private int _gridSize = 50;
+        private Rect _safetyRect;
 
         public int GridSize
         {
@@ -20,11 +21,23 @@ namespace CNC_CAM.UI.CustomWPFElements
                 GridRect.Rect = new Rect(0, 0, _gridSize, _gridSize);
             }
         }
+        
+        public Rect SafetyRect
+        {
+            get => _safetyRect;
+            set
+            {
+                _safetyRect = value;
+                SafetyArea.Height = _safetyRect.Height;
+                SafetyArea.Width = _safetyRect.Width;
+            }
+        }
 
         public Workspace2D()
         {
             InitializeComponent();
             SignalBus.Subscribe<WpfSignals.SetGridSize>((signal) => GridSize = signal.GridSize);
+            SignalBus.Subscribe<WpfSignals.SetSafetyAreaSize>((signal) => SafetyRect = new Rect(0,0, signal.Width, signal.Height));
             MouseMove += MouseMoved;
         }
 

@@ -9,7 +9,7 @@ namespace CNC_CAM.SVG.Parsers
         public override T Create(XmlElement element)
         {
             var group = base.Create(element);
-            group.Children.AddRange(GetChildren(element));
+            group.Children.AddRange(GetChildren(element, group));
             return group;
         }
 

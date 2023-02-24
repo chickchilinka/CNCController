@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Numerics;
+using System.Windows;
 using System.Windows.Input;
 using CNC_CAM.Machine.CNC.Controllers;
 using CNC_CAM.Machine.Configs;
@@ -20,6 +22,7 @@ namespace CNC_CAM.UI.Windows
         private readonly Workspace _workspace;
         private readonly OperationsHistory _operationsHistory;
         private MouseObserver _mouseObserver;
+        public string SomeText => "SomeText";
 
         public MainWindow(CncConfig config)
         {
@@ -29,6 +32,12 @@ namespace CNC_CAM.UI.Windows
             _workspace = new Workspace();
             _operationsHistory = new OperationsHistory();
             WorkspaceScrollView.Content = _workspace.Workspace2D;
+            SafeAreaWidth.Value = _workspace.Workspace2D.SafetyArea.Width.ToString(CultureInfo.InvariantCulture);
+            SafeAreaHeight.Value = _workspace.Workspace2D.SafetyArea.Height.ToString(CultureInfo.InvariantCulture);
+            SafeAreaWidth.OnChangedNumeric +=
+                (_) => _workspace.Workspace2D.SafetyRect = new Rect(0, 0, SafeAreaWidth.NumericValue, SafeAreaHeight.NumericValue);
+            SafeAreaHeight.OnChangedNumeric +=
+                (_) => _workspace.Workspace2D.SafetyRect = new Rect(0, 0, SafeAreaWidth.NumericValue, SafeAreaHeight.NumericValue);
             GridSize.Text = $"Grid size:{_workspace.Workspace2D.GridSize}mm";
             SignalBus.Subscribe<WpfSignals.SetGridSize>((size => GridSize.Text = $"Grid size:{size.GridSize}mm"));
             SignalBus.Subscribe<WpfSignals.MouseMoved>(moved =>
@@ -73,13 +82,27 @@ namespace CNC_CAM.UI.Windows
 
         private void GridSize_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var window = MakeShapeWindowBuilder
+            var window = GenericWindowWithFieldsBuilder
+                .Create(
+                    (vectors, decimals) => { SignalBus.Fire(new WpfSignals.SetGridSize((int)decimals["Grid size"])); },
+                    () => { }).AddSimpleFloatField("Grid size", defaultValue: _workspace.Workspace2D.GridSize)
+                .WithTitle("Grid size").Build();
+            window.Show();
+        }
+
+        private void SafetyArea_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var window = GenericWindowWithFieldsBuilder
                 .Create(
                     (vectors, decimals) =>
                     {
-                        SignalBus.Fire(new WpfSignals.SetGridSize((int)decimals["Grid size"]));
+                        SignalBus.Fire(new WpfSignals.SetSafetyAreaSize(decimals["Width"], decimals["Height"]));
                     },
-                    () => { }).AddSimpleFloatField("Grid size", defaultValue: _workspace.Workspace2D.GridSize).Build();
+                    () => { })
+                .WithTitle("Safety area")
+                .AddWidthHeightField("Safety area size",
+                    new Vector2((float)_workspace.Workspace2D.SafetyArea.Width,
+                        (float)_workspace.Workspace2D.SafetyArea.Height)).Build();
             window.Show();
         }
     }
