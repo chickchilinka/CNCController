@@ -70,6 +70,12 @@ namespace CNC_CAM.UI.CustomWPFElements
             get => InputBox.Width;
             set => InputBox.Width = value;
         }
+
+        public object TooltipContent
+        {
+            get => ToolTip.Content;
+            set => ToolTip.Content = value;
+        }
         
         private void InputBox_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -80,5 +86,7 @@ namespace CNC_CAM.UI.CustomWPFElements
             }
             else e.Handled = false;
         }
+        
+        
     }
 }

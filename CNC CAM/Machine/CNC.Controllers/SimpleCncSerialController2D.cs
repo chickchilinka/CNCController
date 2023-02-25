@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using CNC_CAM.Base;
+using CNC_CAM.Configuration;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.SVG.Elements;
@@ -21,10 +22,10 @@ namespace CNC_CAM.Machine.CNC.Controllers
     public class SimpleCncSerialController2D : AbstractController2D
     {
         private Logger _logger = Logger.CreateForClass(typeof(DummyCncController2D));
-        private CncConfig _config;
+        private CurrentConfiguration _config;
         private bool Interrupt { get; set; } = false;
 
-        public SimpleCncSerialController2D(CncConfig config)
+        public SimpleCncSerialController2D(CurrentConfiguration config)
         {
             _config = config;
         }

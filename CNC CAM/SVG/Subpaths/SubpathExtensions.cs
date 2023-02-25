@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Windows;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 
 namespace CNC_CAM.SVG.Subpaths;

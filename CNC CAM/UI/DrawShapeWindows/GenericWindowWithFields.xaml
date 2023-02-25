@@ -12,7 +12,7 @@
             <StackPanel x:Name="FieldsStack"
                         Orientation="Vertical">
             </StackPanel>
-            <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Margin="10 10 10 0">
+            <StackPanel x:Name = "ButtonsStack" Orientation="Vertical" VerticalAlignment="Stretch" Margin="10 10 10 0">
                 <Button x:Name="DoneButton"
                         Height="20"
                         Width="70" Click="DoneButton_OnClick">

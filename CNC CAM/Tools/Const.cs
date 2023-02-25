@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 
 namespace CNC_CAM.Tools;
@@ -18,22 +20,20 @@ public static class Const
 
     public static class Configs
     {
-
-        public static readonly AccuracySettings DefaultAccuracy = new AccuracySettings(1);
-        public static readonly CncConfig DefaultCncConfig = new CncConfig()
+        public static readonly IReadOnlyList<BaseConfig> DefaultConfigs = new List<BaseConfig>()
         {
-            HeadDown = -105,
-            COMPort = "COM5",
-            BaudRate = 115200,
-            AccuracySettings = DefaultAccuracy
+            BaseConfig.Create<AccuracySettings>("default"),
+            BaseConfig.Create<CNCConnectionSettings>("default"),
+            BaseConfig.Create<CNCControlSettings>("default"),
+            BaseConfig.Create<CNCHeadSettings>("default"),
+            BaseConfig.Create<WorksheetConfig>("default")
         };
     }
 
     public static class Paths
     {
-        public static readonly string DocumentsPath = @"%USERPROFILE%\Documents\CNC_CAM\";
-        public static readonly string LastSessionFolder = @"Last Session\";
-        public static readonly string CncConfigFileName = "CncConfig";
-        public static string CncConfigFileFullPath => DocumentsPath + LastSessionFolder + CncConfigFileName;
+        public const string DocumentsPath = @"%USERPROFILE%\Documents\CNC_CAM\";
+        public const string ConfigurationsPath = DocumentsPath + @"Configs\";
+        public const string LastConfigsFilename = @"LastSession";
     }
 }

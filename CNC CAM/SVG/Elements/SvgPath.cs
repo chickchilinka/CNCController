@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using CNC_CAM.Configuration;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
@@ -76,7 +78,7 @@ namespace CNC_CAM.SVG.Elements
             }
         }
 
-        public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
+        public override List<GCodeCommand> GenerateGCodeCommands(CurrentConfiguration config)
         {
             return new List<GCodeCommand>
             {
