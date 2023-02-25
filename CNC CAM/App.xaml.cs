@@ -31,7 +31,6 @@ namespace CNC_CAM
             _scope.Install();
             _container = _scope.Container;
             _signalBus = _container.Resolve<SignalBus>();
-            _signalBus.Fire(new ConfigurationSignals.EditConfig(_container.Resolve<CurrentConfiguration>().GetCurrentConfig<AccuracySettings>()));
             Exit += OnExit;
             _mainWindow = new MainWindow(_container);
             _mainWindow.Show();
