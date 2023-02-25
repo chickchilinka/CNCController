@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CNC_CAM.Configuration;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
@@ -20,7 +21,7 @@ namespace CNC_CAM.SVG.Elements
             return shapesList;
         }
         //TODO:Так же отделить сущность от представления для станка
-        public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
+        public override List<GCodeCommand> GenerateGCodeCommands(CurrentConfiguration config)
         {
             var commands = new List<GCodeCommand>();
             foreach (var shape in Children)

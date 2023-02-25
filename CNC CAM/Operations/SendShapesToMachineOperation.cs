@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using CNC_CAM.Configuration;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.CNC.Controllers;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
@@ -15,8 +17,8 @@ namespace CNC_CAM.Operations
         private Logger _logger;
         private AbstractController2D _machineController;
         private Workspace _workspace;
-        private CncConfig _config;
-        public SendShapesToMachineOperation(AbstractController2D controller2D, Workspace workspace, CncConfig config ) : base("Send to machine")
+        private CurrentConfiguration _config;
+        public SendShapesToMachineOperation(AbstractController2D controller2D, Workspace workspace, CurrentConfiguration config) : base("Send to machine")
         {
             _logger = Logger.CreateFor(this);
             _workspace = workspace;
@@ -41,7 +43,7 @@ namespace CNC_CAM.Operations
                     curves.Add((ICurve)shape);
                 }
             }
-            new DrawGCodeWindow().Draw(curves, _config.AccuracySettings);
+            new DrawGCodeWindow().Draw(curves, _config.GetCurrentConfig<AccuracySettings>());
             foreach (var shape in sequence)
             {
                 gcodes.AddRange(shape.GenerateGCodeCommands(_config));

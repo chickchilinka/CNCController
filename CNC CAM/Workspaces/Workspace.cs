@@ -10,10 +10,10 @@ namespace CNC_CAM.Workspaces
         public List<Shape> Shapes { get; }
         public Workspace2D Workspace2D { get; }
 
-        public Workspace()
+        public Workspace(SignalBus signalBus)
         {
             Shapes = new List<Shape>();
-            Workspace2D = new Workspace2D();
+            Workspace2D = new Workspace2D(signalBus);
         }
 
         public void AddShape(Shape shape)

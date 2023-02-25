@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Windows.Media;
+using CNC_CAM.Configuration;
 using WPFShape = System.Windows.Shapes.Shape;
 using CNC_CAM.Tools;
 using CNC_CAM.Machine.Configs;
@@ -33,7 +34,7 @@ namespace CNC_CAM.Shapes
             }
         }
 //TODO:создать абстрактную фабрику операций по рисованию, сделать реализацию для станка с ручкой/карандашом, убрать данный метод
-        public abstract List<GCodeCommand> GenerateGCodeCommands(CncConfig config);
+        public abstract List<GCodeCommand> GenerateGCodeCommands(CurrentConfiguration config);
         // TODO:так же через фабрику
         public virtual List<WPFShape> GetControlShapes()
         {

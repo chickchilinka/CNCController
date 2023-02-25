@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 
 namespace CNC_CAM.SVG.Elements;

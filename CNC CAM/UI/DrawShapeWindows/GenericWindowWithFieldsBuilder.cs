@@ -11,19 +11,20 @@ namespace CNC_CAM.UI.DrawShapeWindows
     {
         public static Thickness DefaultMargin = new Thickness(5, 5, 0, 0);
         private readonly List<Control> _controlsToAdd;
-        private readonly Action<Dictionary<string, Vector2>, Dictionary<string, float>> _onSubmit;
+        
+        private readonly Action<Dictionary<string, object>> _onSubmit;
         private string? _title;
         private Action _onCancel;
         private Thickness _margin = DefaultMargin;
 
-        private GenericWindowWithFieldsBuilder(Action<Dictionary<string, Vector2>, Dictionary<string, float>> onSubmit, Action onCancel)
+        private GenericWindowWithFieldsBuilder(Action<Dictionary<string, object>> onSubmit, Action onCancel)
         {
             _controlsToAdd = new List<Control>();
             _onSubmit = onSubmit;
             _onCancel = onCancel;
         }
 
-        public static GenericWindowWithFieldsBuilder Create(Action<Dictionary<string, Vector2>, Dictionary<string, float>> onSubmit, Action onCancel)
+        public static GenericWindowWithFieldsBuilder Create(Action<Dictionary<string, object>> onSubmit, Action onCancel)
         {
             return new GenericWindowWithFieldsBuilder(onSubmit, onCancel);
         }
@@ -71,7 +72,7 @@ namespace CNC_CAM.UI.DrawShapeWindows
             return this;
         }
 
-        public GenericWindowWithFieldsBuilder AddSimpleFloatField(string fieldName, double width = 100, float defaultValue = 0)
+        public GenericWindowWithFieldsBuilder AddSimpleFloatField(string fieldName, double width = 100, float defaultValue = 0, object tooltipContent = null)
         {
             var control = new GenericField<float>()
             {
@@ -79,7 +80,8 @@ namespace CNC_CAM.UI.DrawShapeWindows
                 InputWidth = width,
                 Margin = _margin,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Value = defaultValue.ToString()
+                Value = defaultValue.ToString(),
+                TooltipContent = tooltipContent
             };
             _controlsToAdd.Add(control);
             return this;
@@ -89,17 +91,18 @@ namespace CNC_CAM.UI.DrawShapeWindows
         {
             var window = new GenericWindowWithFields(_controlsToAdd, () =>
             {
+                Dictionary<string, object> values = new Dictionary<string, object>();
                 Dictionary<string, Vector2> vector2s = new Dictionary<string, Vector2>();
                 Dictionary<string, float> decimals = new Dictionary<string, float>();
                 foreach (var control in _controlsToAdd)
                 {
                     if(control is Vector2Input)
-                        vector2s.Add(((Vector2Input) control).Header, ((Vector2Input)control).Value);
+                        values.Add(((Vector2Input) control).Header, ((Vector2Input)control).Value);
                     else if(control is LabeledField)
-                        decimals.Add(((LabeledField) control).FieldName, (float)((LabeledField)control).NumericValue);
+                        values.Add(((LabeledField) control).FieldName, (float)((LabeledField)control).NumericValue);
                 }
 
-                _onSubmit(vector2s, decimals);
+                _onSubmit(values);
             }, () =>
             {
                 _onCancel();

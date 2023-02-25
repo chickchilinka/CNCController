@@ -4,6 +4,8 @@ using System.IO.Ports;
 using System.Management;
 using System.Windows;
 using System.Windows.Controls;
+using CNC_CAM.Configuration;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.CNC.Controllers;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
@@ -13,18 +15,18 @@ namespace CNC_CAM.UI.Windows;
 
 public partial class ConfigurationWindow : Window
 {
-    private CncConfig _config;
+    private CurrentConfiguration _config;
     private Logger _logger;
     private ConfigurationWindow()
     {
         InitializeComponent();
     }
 
-    public ConfigurationWindow(CncConfig configToEdit):this()
+    public ConfigurationWindow(CurrentConfiguration configToEdit):this()
     {
         _config = configToEdit;
-        ZDown.Value = configToEdit.HeadDown.ToString();
-        ZUp.Value = configToEdit.HeadUp.ToString();
+        ZDown.Value = configToEdit.GetCurrentConfig<CNCHeadSettings>().HeadDown.ToString();
+        ZUp.Value = configToEdit.GetCurrentConfig<CNCHeadSettings>().HeadUp.ToString();
         _logger = Logger.CreateFor(this);
         FillComboBox();
     }
@@ -65,10 +67,10 @@ public partial class ConfigurationWindow : Window
 
     private void ApplyConfig()
     {
-        _config.HeadDown = ZDown.NumericValue;
-        _config.HeadUp = ZUp.NumericValue;
-        _config.COMPort = PortsList.SelectionBoxItem.ToString();
-        _config.BaudRate = int.Parse(BaudRate.Value);
+        _config.GetCurrentConfig<CNCHeadSettings>().HeadDown = ZDown.NumericValue;
+        _config.GetCurrentConfig<CNCHeadSettings>().HeadUp = ZUp.NumericValue;
+        _config.GetCurrentConfig<CNCConnectionSettings>().ComPort = PortsList.SelectionBoxItem.ToString();
+        _config.GetCurrentConfig<CNCConnectionSettings>().BaudRate = int.Parse(BaudRate.Value);
     }
 
     private void PortsList_OnSelected(object sender, EventArgs eventArgs)
@@ -78,12 +80,12 @@ public partial class ConfigurationWindow : Window
     private void ButtonTestZDown_OnClick(object sender, RoutedEventArgs e)
     {
         ApplyConfig();
-        SendTestZCommand(_config.HeadDown);
+        SendTestZCommand(_config.GetCurrentConfig<CNCHeadSettings>().HeadDown);
     }
     private void ButtonTestZUp_OnClick(object sender, RoutedEventArgs e)
     {
         ApplyConfig();
-        SendTestZCommand(_config.HeadUp);
+        SendTestZCommand(_config.GetCurrentConfig<CNCHeadSettings>().HeadUp);
     }
     private void SendTestZCommand(double zPos)
     {

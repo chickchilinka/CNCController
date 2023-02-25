@@ -10,6 +10,7 @@ namespace CNC_CAM.UI.CustomWPFElements
     {
         private int _gridSize = 50;
         private Rect _safetyRect;
+        private SignalBus _signalBus;
 
         public int GridSize
         {
@@ -33,17 +34,18 @@ namespace CNC_CAM.UI.CustomWPFElements
             }
         }
 
-        public Workspace2D()
+        public Workspace2D(SignalBus signalBus)
         {
             InitializeComponent();
-            SignalBus.Subscribe<WpfSignals.SetGridSize>((signal) => GridSize = signal.GridSize);
-            SignalBus.Subscribe<WpfSignals.SetSafetyAreaSize>((signal) => SafetyRect = new Rect(0,0, signal.Width, signal.Height));
+            _signalBus = signalBus;
+            _signalBus.Subscribe<WpfSignals.SetGridSize>((signal) => GridSize = signal.GridSize);
+            _signalBus.Subscribe<WpfSignals.SetSafetyAreaSize>((signal) => SafetyRect = new Rect(0,0, signal.Width, signal.Height));
             MouseMove += MouseMoved;
         }
 
         public void MouseMoved(object obj, MouseEventArgs mouseEventArgs)
         {
-            SignalBus.Fire(new WpfSignals.MouseMoved(mouseEventArgs.GetPosition(this).ToVector()));
+            _signalBus.Fire(new WpfSignals.MouseMoved(mouseEventArgs.GetPosition(this).ToVector()));
         }
 
         public void AddShape(Shape shape)

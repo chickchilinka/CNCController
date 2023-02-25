@@ -7,6 +7,7 @@
              d:DesignHeight="auto" d:DesignWidth="auto">
     <Grid>
         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+            <StackPanel.ToolTip><ToolTip x:Name ="ToolTip"/></StackPanel.ToolTip>
             <Label x:Name="Label"
                    HorizontalAlignment="Left">field:</Label>
             <TextBox x:Name="InputBox"

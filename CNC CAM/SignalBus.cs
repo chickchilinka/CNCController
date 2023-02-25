@@ -1,30 +1,33 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CNC_CAM;
 
-public static class SignalBus
+public class SignalBus
 {
     private class Subscription
     {
         public virtual Type Signal { get; private set; }
         public virtual Action<Object> Action { get; private set; }
+
         public Subscription(Type type, Action<Object> action)
         {
             Signal = type;
             Action = action;
         }
     }
-    private class Subscription<T>:Subscription where T:class
+
+    private class Subscription<T> : Subscription where T : class
     {
         public Subscription(Action<T> action) : base(typeof(T), obj => action((T)obj))
         {
         }
     }
 
-    private static List<Subscription> _subscriptions = new List<Subscription>();
+    private List<Subscription> _subscriptions = new List<Subscription>();
 
-    public static void Fire<T>(T signal)
+    public void Fire<T>(T signal)
     {
         foreach (var subscription in _subscriptions)
         {
@@ -34,9 +37,16 @@ public static class SignalBus
             }
         }
     }
-    
-    public static void Subscribe<T>(Action<T> action) where T:class
+
+    public void Subscribe<T>(Action<T> action) where T : class
     {
         _subscriptions.Add(new Subscription<T>(action));
+    }
+
+    public void Unsubscribe<T>(Action<T> action) where T : class
+    {
+        var subscription = _subscriptions.FirstOrDefault(subscription => subscription.Action == action);
+        if (subscription != null)
+            _subscriptions.Remove(subscription);
     }
 }

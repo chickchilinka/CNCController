@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using CNC_CAM.Configuration;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
@@ -30,10 +32,10 @@ public class SvgPolyline : SvgElement, ICurve
         return WpfShapes;
     }
 
-    public override List<GCodeCommand> GenerateGCodeCommands(CncConfig config)
+    public override List<GCodeCommand> GenerateGCodeCommands(CurrentConfiguration config)
     {
         List<string> commands = new List<string>();
-        List<Vector> points = Linearize(config.AccuracySettings);
+        List<Vector> points = Linearize(config.GetCurrentConfig<AccuracySettings>());
         if (points.Count == 0) return new List<GCodeCommand>();
         commands.AddRange(GCodeBuilder2D.WithAbsoluteMove(config, points[0]).SetHeadDownAtStart(false)
             .SetHeadDownAtEnd(true).Build());

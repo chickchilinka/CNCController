@@ -1,4 +1,7 @@
 ﻿using System.Windows;
+using CNC_CAM.Base;
+using CNC_CAM.Configuration;
+using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Tools;
 using CNC_CAM.Tools.Serialization;
@@ -13,9 +16,9 @@ namespace CNC_CAM
     public partial class App : Application
     {
         public static bool ShowConsole = true;
-        public static int ShapeID = 0;
-        public static CncConfig CurrentCNCConfig { get; private set; }
-        private SimpleSerializer _serializer;
+        private MainScope _scope;
+        private SignalBus _signalBus;
+        private Container _container;
         private MainWindow _mainWindow;
         public App()
         {
@@ -24,24 +27,19 @@ namespace CNC_CAM
                 ConsoleManager.Show();
             }
 
-            _serializer = new SimpleSerializer();
-            LoadData();
-            Exit += SaveData;
-            _mainWindow = new MainWindow(CurrentCNCConfig);
+            _scope = new MainScope();
+            _scope.Install();
+            _container = _scope.Container;
+            _signalBus = _container.Resolve<SignalBus>();
+            _signalBus.Fire(new ConfigurationSignals.EditConfig(_container.Resolve<CurrentConfiguration>().GetCurrentConfig<AccuracySettings>()));
+            Exit += OnExit;
+            _mainWindow = new MainWindow(_container);
             _mainWindow.Show();
-            Container container = new Container();
-            container.Register<SimpleSerializer>(Reuse.Singleton);
         }
 
-        private void LoadData()
+        private void OnExit(object sender, ExitEventArgs e)
         {
-            CurrentCNCConfig =
-                _serializer.Deserialize(Const.Paths.CncConfigFileFullPath, Const.Configs.DefaultCncConfig);
-        }
-
-        private void SaveData(object obj, ExitEventArgs eventArgs)
-        {
-            _serializer.Serialize(Const.Paths.DocumentsPath+Const.Paths.LastSessionFolder,Const.Paths.CncConfigFileName, CurrentCNCConfig);
+            _signalBus.Fire(new AppSignals.Exit());
         }
     }
 }
