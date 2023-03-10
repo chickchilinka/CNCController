@@ -23,7 +23,7 @@ public class SvgPolygon:SvgPolyline
     
     public override List<Shape> GetControlShapes()
     {
-        _wpfPolygon.Points = new PointCollection(_points.Select(vector => new Point(vector.X, vector.Y)));
+        _wpfPolygon.Points = new PointCollection(Points.Select(vector => new Point(vector.X, vector.Y)));
         return WpfShapes;
     }
 

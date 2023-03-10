@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Controls;
 using System.Xml;
@@ -7,17 +8,18 @@ using Microsoft.Win32;
 using CNC_CAM.SVG.Elements;
 using CNC_CAM.SVG.Parsers;
 using CNC_CAM.Workspaces;
+using CNC_CAM.Workspaces.Hierarchy;
 
 namespace CNC_CAM.Operations
 {
     public class LoadSvgOperation:Operation
     {
         private bool _canceled;
-        private readonly Workspace _currentWorkspace;
-        private SvgRoot _root;
-        public LoadSvgOperation(Workspace workspace) : base("Load SVG")
+        private readonly WorkspaceFacade _currentWorkspaceFacade;
+        private List<SvgWorkspaceElement> _roots = new List<SvgWorkspaceElement>();
+        public LoadSvgOperation(WorkspaceFacade workspaceFacade) : base("Load SVG")
         {
-            _currentWorkspace = workspace;
+            _currentWorkspaceFacade = workspaceFacade;
         }
 
         public override void Execute()
@@ -34,7 +36,7 @@ namespace CNC_CAM.Operations
                 var filePath = openFileDialog.FileName;
                 Name += $" {filePath}";
                 XmlReader reader = XmlReader.Create(filePath, new XmlReaderSettings(){DtdProcessing = DtdProcessing.Parse});
-                AddSvgShape(reader);
+                AddSvgShape(filePath, reader);
             }
             else
             {
@@ -42,18 +44,18 @@ namespace CNC_CAM.Operations
             }
         }
 
-        private void AddSvgShape(XmlReader reader)
+        private void AddSvgShape(string path, XmlReader reader)
         {
             XmlDocument document = new XmlDocument();
             document.Load(reader);
             foreach (XmlElement root in document.GetElementsByTagName("svg"))
             {
-                _root = new SvgParser().Create(root);    
-            }
-            
-            foreach (var subshape in _root.Children)
-            {
-                _currentWorkspace.AddShape(subshape);   
+                var svgRoot = new SvgParser().Create(root);
+                var indexOfLastSlash = path.LastIndexOf('\\') + 1;
+                var workspaceElement =
+                    new SvgWorkspaceElement(path.Substring(indexOfLastSlash, path.Length-indexOfLastSlash), path, svgRoot);
+                _roots.Add(workspaceElement);
+                _currentWorkspaceFacade.Add(workspaceElement);
             }
         }
 
@@ -62,11 +64,12 @@ namespace CNC_CAM.Operations
             if (!_canceled)
             {
                 _canceled = true;
-                foreach (var subshape in _root.Children)
+                foreach (var element in _roots)
                 {
-                    _currentWorkspace.RemoveShape(subshape);
+                    _currentWorkspaceFacade.Remove(element);
                 }
             }
+            _roots.Clear();
         }
     }
 }

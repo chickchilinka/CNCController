@@ -27,7 +27,7 @@ namespace CNC_CAM.SVG.Parsers
             _curves = GetCurves(data);
             return new SvgPath(data, id, _curves, returnedToStart ? _startPoint : null)
             {
-                TransformationMatrix = GetTransformationMatrixFromXml(element)
+                TransformationMatrix = element.GetTransformationMatrix()
             };
         }
 
@@ -36,7 +36,7 @@ namespace CNC_CAM.SVG.Parsers
             var curves = new List<ICurve>();
             var separators = @"(?=[MZLHVCSQTAmzlhvcsqta])";
             var tokens = Regex.Split(data, separators).Where(t => !string.IsNullOrEmpty(t)).ToArray();
-            var args = GetCommandArguments(tokens[0]);
+            var args = tokens[0].GetCommandArguments();
             _startPoint = new Vector(args[0], args[1]);
             _currentPoint = _startPoint;
             _lastSubpath = _currentPoint;
@@ -62,7 +62,7 @@ namespace CNC_CAM.SVG.Parsers
         }
         private ICurve GetCurveForCommand(string command)
         {
-            var args = GetCommandArguments(command);
+            var args = command.GetCommandArguments();
             ICurve curve = null;
             switch (command[0])
             {
@@ -140,7 +140,7 @@ namespace CNC_CAM.SVG.Parsers
 
         private ICurve MoveToAbsolute(string command)
         {
-            var args = GetCommandArguments(command);
+            var args = command.GetCommandArguments();
             if (args.Length == 2)
             {
                 _currentPoint.X = args[0];
@@ -161,7 +161,7 @@ namespace CNC_CAM.SVG.Parsers
 
         private ICurve MoveToRelative(string command)
         {
-            var args = GetCommandArguments(command);
+            var args = command.GetCommandArguments();
             if (args.Length == 2)
             {
                 _currentPoint.X += args[0];

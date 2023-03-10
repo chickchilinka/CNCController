@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
       <PackageReference Include="DryIoc.dll" Version="5.3.0" />
       <PackageReference Include="Fluent.Ribbon" Version="9.0.4" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -20,6 +21,7 @@
       <Folder Include="Machine" />
       <Folder Include="RibbonElements" />
       <Folder Include="UI" />
+      <Folder Include="Workspaces\Factory" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,6 +40,11 @@
       <Resource Include="Images\RunTest_16x.png" />
       <None Remove="Images\Undo_16x.png" />
       <Resource Include="Images\Undo_16x.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Images\Svg_Icon.png" />
+      <Resource Include="Images\Svg_Icon.png" />
     </ItemGroup>
 
 </Project>

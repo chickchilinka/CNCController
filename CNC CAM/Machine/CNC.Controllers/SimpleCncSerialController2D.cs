@@ -62,7 +62,7 @@ namespace CNC_CAM.Machine.CNC.Controllers
             string[] substrings = data.Split('|');
             if (substrings.Length < 2)
                 throw new NotCompleteMessageException("No response from cnc machine");
-            double[] args = SvgElementParser<SvgPath>.GetCommandArguments(substrings[1]);
+            double[] args = substrings[1].GetCommandArguments();
             return new((float) args[0], (float) args[1], (float) args[2]);
         }
 
@@ -77,7 +77,7 @@ namespace CNC_CAM.Machine.CNC.Controllers
 
                 if (command.StartsWith("G01") || command.StartsWith("G00"))
                 {
-                    var commandPosArgs = SvgElementParser<SvgPath>.GetCommandArguments(command.Remove(0, 3));
+                    var commandPosArgs = command.Remove(0, 3).GetCommandArguments();
                     try
                     {
                         if (commandPosArgs.Length == 0)

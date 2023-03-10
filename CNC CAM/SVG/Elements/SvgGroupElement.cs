@@ -8,7 +8,7 @@ namespace CNC_CAM.SVG.Elements
 {
     public class SvgGroupElement:SvgElement, IGroup<SvgElement>
     {
-        public List<SvgElement> Children { get; }= new();
+        public List<SvgElement> Children { get; } = new();
         
         //TODO:Так же отделить сущность от представления
         public override List<WpfShape> GetControlShapes()

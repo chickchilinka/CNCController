@@ -14,7 +14,7 @@ namespace CNC_CAM.SVG.Elements;
 
 public class SvgPolyline : SvgElement, ICurve
 {
-    public readonly List<Vector> _points = new();
+    public readonly List<Vector> Points = new();
     private Polyline _wpfPolyline;
     public SvgPolyline()
     {
@@ -28,7 +28,7 @@ public class SvgPolyline : SvgElement, ICurve
 
     public override List<Shape> GetControlShapes()
     {
-        _wpfPolyline.Points = new PointCollection(_points.Select(vector => new Point(vector.X, vector.Y)));
+        _wpfPolyline.Points = new PointCollection(Points.Select(vector => new Point(vector.X, vector.Y)));
         return WpfShapes;
     }
 
@@ -49,24 +49,24 @@ public class SvgPolyline : SvgElement, ICurve
 
     public virtual List<Vector> Linearize(AccuracySettings accuracy)
     {
-        return _points.Select(ToGlobalPoint).ToList();
+        return Points.Select(ToGlobalPoint).ToList();
     }
 
-    public Vector StartPoint => _points.Count > 0 ? _points[0] : default;
+    public Vector StartPoint => Points.Count > 0 ? Points[0] : default;
 
-    public Vector EndPoint => _points.Count > 0 ? _points[0] : default;
+    public Vector EndPoint => Points.Count > 0 ? Points[0] : default;
     public double Length
     {
         get
         {
-            if (_points.Count == 0)
+            if (Points.Count == 0)
                 return 0;
             double sum = 0;
-            Vector lastPoint = _points[0];
-            for (int i = 1; i < _points.Count; i++)
+            Vector lastPoint = Points[0];
+            for (int i = 1; i < Points.Count; i++)
             {
-                sum += (lastPoint - _points[i]).Length;
-                lastPoint = _points[i];
+                sum += (lastPoint - Points[i]).Length;
+                lastPoint = Points[i];
             }
 
             return sum;

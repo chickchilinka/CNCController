@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Media;
 
@@ -9,15 +10,24 @@ namespace CNC_CAM.SVG.Subpaths
         public virtual Matrix TransformationMatrix
         {
             get => _transformationMatrix;
-            set => _transformationMatrix = value;
+            set
+            {
+                _transformationMatrix = value; 
+                OnChange?.Invoke();
+            }
         }
         public virtual Matrix FinalMatrix => TransformationMatrix * (Parent?.FinalMatrix ?? Matrix.Identity);
+        public event Action OnChange;
         
         protected Transform _parent;
         public virtual Transform Parent
         {
             get => _parent;
-            set => _parent = value;
+            set
+            {
+                _parent = value;
+                OnChange?.Invoke();
+            }
         }
         public virtual Vector ToGlobalPoint(Vector point)
         {
