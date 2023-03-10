@@ -4,6 +4,7 @@ using CNC_CAM.Configuration;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Tools;
 using CNC_CAM.UI.CustomWPFElements;
+using CNC_CAM.Workspaces.View;
 
 namespace CNC_CAM.Observers;
 

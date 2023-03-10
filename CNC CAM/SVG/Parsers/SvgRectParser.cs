@@ -30,7 +30,7 @@ public class SvgRectParser:SvgPathDataParser
         var pathData = GetPathDataAnalog(x, y, w, h, rx, ry);
         var curves = GetCurves(pathData);
         return new SvgRect(pathData, GetId(element), curves) {
-            TransformationMatrix = GetTransformationMatrixFromXml(element)
+            TransformationMatrix = element.GetTransformationMatrix()
         };
     }
     

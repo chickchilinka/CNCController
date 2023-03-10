@@ -30,7 +30,7 @@ public class SvgEllipseParser:SvgPathDataParser
         var curves = GetCurves(pathData);
         return new SvgEllipse(pathData, GetId(element), curves)
         {
-            TransformationMatrix = GetTransformationMatrixFromXml(element)
+            TransformationMatrix = element.GetTransformationMatrix()
         };
     }
 }

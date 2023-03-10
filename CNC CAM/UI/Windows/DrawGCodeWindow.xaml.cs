@@ -6,6 +6,7 @@ using CNC_CAM.Configuration.Data;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Shapes;
 using CNC_CAM.UI.CustomWPFElements;
+using CNC_CAM.Workspaces.View;
 using DryIoc;
 
 namespace CNC_CAM.UI.Windows
@@ -18,7 +19,7 @@ namespace CNC_CAM.UI.Windows
         public DrawGCodeWindow()
         {
             InitializeComponent();
-            _workspace2D = new Workspace2D(MainScope.Instance.Container.Resolve<SignalBus>());
+            _workspace2D = MainScope.Instance.Container.Resolve<Workspace2D>();
             WorkspaceScrollView.Content = _workspace2D;
         }
 

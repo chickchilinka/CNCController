@@ -5,6 +5,7 @@
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:fluent="urn:fluent-ribbon"
                      xmlns:custom="clr-namespace:CNC_CAM.UI.CustomWPFElements"
+                     xmlns:view="clr-namespace:CNC_CAM.Workspaces.Hierarchy.View"
                      mc:Ignorable="d"
                      Title="MainWindow" WindowState="Maximized" Height="450" Width="800">
     <Grid>
@@ -70,9 +71,12 @@
             </fluent:RibbonTabItem>
 
         </fluent:Ribbon>
-
-        <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
-        </ScrollViewer>
+        <DockPanel Grid.Row="1" Dock="Left">
+            <StackPanel x:Name = "HierarchyStackPanel" DockPanel.Dock="Left" Width="250px">
+            </StackPanel>
+            <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
+            </ScrollViewer>
+        </DockPanel>
         <fluent:StatusBar Grid.Row="2">
             <fluent:StatusBarItem HorizontalAlignment="Right">
                 <fluent:TextBox

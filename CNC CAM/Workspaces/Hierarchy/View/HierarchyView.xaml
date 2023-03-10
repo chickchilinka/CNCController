@@ -1,0 +1,18 @@
+<UserControl x:Class="CNC_CAM.Workspaces.Hierarchy.View.HierarchyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:CNC_CAM.Workspaces.Hierarchy.View"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label>Hierarchy</Label>
+        <TreeView Grid.Row="1" x:Name="HierarchyTreeView">
+        </TreeView>
+    </Grid>
+</UserControl>

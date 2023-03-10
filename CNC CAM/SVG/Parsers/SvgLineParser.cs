@@ -15,7 +15,7 @@ public class SvgLineParser : SvgElementParser<SvgPolyline>
         var x2 = GetAttribute(element, "x2") ?? 0;
         var y2 = GetAttribute(element, "y2") ?? 0;
         var points = new List<Vector> { new Vector(x1, y1), new Vector(x2, y2) };
-        polyline._points.AddRange(points);
+        polyline.Points.AddRange(points);
         return polyline;
     }
 

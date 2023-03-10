@@ -16,11 +16,15 @@ public class MainScope:Scope
     public static MainScope Instance => _instance ??= new MainScope();
     public void Install()
     {
+        _instance = this;
+        Container.Rules.WithoutThrowOnRegisteringDisposableTransient();
+        
         _container.Register<SerializationService>(Reuse.Singleton);
         _container.Register<SignalBus>(Reuse.Singleton);
-        _container.Register<Workspace>(Reuse.Singleton);
+        _container.Register<WorkspaceFacade>(Reuse.Singleton);
         _container.Register<OperationsHistory>(Reuse.Singleton);
         new ConfigurationInstaller().Install(Container);
+        new WorkspaceInstaller().Install(Container);
         
         var registrations = _container.GetServiceRegistrations()
             .Where(r => r.Factory.Setup.Metadata?.Equals(ContainerExtensions.NonLazy) ?? false)

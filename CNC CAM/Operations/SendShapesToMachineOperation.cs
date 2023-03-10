@@ -9,6 +9,8 @@ using CNC_CAM.SVG.Elements;
 using CNC_CAM.Tools;
 using CNC_CAM.UI.Windows;
 using CNC_CAM.Workspaces;
+using CNC_CAM.Workspaces.Hierarchy;
+using DryIoc;
 
 namespace CNC_CAM.Operations
 {
@@ -16,12 +18,14 @@ namespace CNC_CAM.Operations
     {
         private Logger _logger;
         private AbstractController2D _machineController;
-        private Workspace _workspace;
+        private WorkspaceFacade _workspaceFacade;
         private CurrentConfiguration _config;
-        public SendShapesToMachineOperation(AbstractController2D controller2D, Workspace workspace, CurrentConfiguration config) : base("Send to machine")
+        private WorkspaceElementStorage _workspaceElementStorage;
+        public SendShapesToMachineOperation(IContainer container, AbstractController2D controller2D, WorkspaceFacade workspaceFacade, CurrentConfiguration config) : base("Send to machine")
         {
+            _workspaceElementStorage = container.Resolve<WorkspaceElementStorage>();
             _logger = Logger.CreateFor(this);
-            _workspace = workspace;
+            _workspaceFacade = workspaceFacade;
             _machineController = controller2D;
             _config = config;
         }
@@ -57,12 +61,34 @@ namespace CNC_CAM.Operations
             _machineController.Stop();
         }
 
-        public List<Shape> GetOptimalSequence()
+        private List<Shape> GetOptimalSequence()
         {
-            if (_workspace.Shapes == null || _workspace.Shapes.Count == 0)
-                return new List<Shape>();
-            return new OptimalPathBuilder<Shape>().GetPathForTransforms(_workspace.GetAllChildShapes(), out double sum);
+            var children = new List<Shape>();   
+            foreach (var element in _workspaceElementStorage)
+            {
+                if (element is WorkspaceElement<SvgRoot> svgElement)
+                {
+                    children.AddRange(GetAllChildShapes(svgElement.Element));
+                }
+            }
+            return new OptimalPathBuilder<Shape>().GetPathForTransforms(children, out double sum);
         }
+        
+        public List<Shape> GetAllChildShapes(Shape element)
+        {
+            var list = new List<Shape>();
+            if (element is SvgGroupElement group)
+            {
+                foreach (var child in group.Children)
+                {
+                    list.AddRange(GetAllChildShapes(child));
+                }
+                return list;
+            }
+            list.Add(element);
+            return list;
+        }
+        
 
         public override void Undo()
         {

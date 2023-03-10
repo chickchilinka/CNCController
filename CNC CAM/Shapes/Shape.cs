@@ -9,7 +9,7 @@ using Transform = CNC_CAM.SVG.Subpaths.Transform;
 
 namespace CNC_CAM.Shapes
 {
-    public abstract class Shape : SVG.Subpaths.Transform
+    public abstract class Shape : Transform
     {
         public double StrokeWidth { get; set; }
         protected List<WPFShape> WpfShapes = new List<WPFShape>();
@@ -24,12 +24,12 @@ namespace CNC_CAM.Shapes
             }
         }
 
-        public override SVG.Subpaths.Transform Parent
+        public override Transform Parent
         {
             get => _parent;
             set
             {
-                _parent = value;
+                base.Parent = value;
                 ApplyTransformationMatrixToWpf();
             }
         }
