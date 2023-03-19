@@ -13,8 +13,10 @@ namespace CNC_CAM.Configuration.Rule;
 
 public class EditConfigRule:AbstractSignalRule<ConfigurationSignals.EditConfig>
 {
-    public EditConfigRule(SignalBus signalBus) : base(signalBus)
+    private ConfigurationStorage _configurationStorage;
+    public EditConfigRule(ConfigurationStorage configurationStorage, SignalBus signalBus) : base(signalBus)
     {
+        _configurationStorage = configurationStorage;
     }
 
     protected override void OnSignalFired(ConfigurationSignals.EditConfig signal)
@@ -37,6 +39,15 @@ public class EditConfigRule:AbstractSignalRule<ConfigurationSignals.EditConfig>
             if(property.PropertyType == typeof(double))
                 builder.AddSimpleFloatField(propertyAttribute?.Name, tooltipContent:propertyAttribute.Description,
                     defaultValue: Convert.ToSingle(property.GetValue(signal.Config)));
+            if (property.PropertyType == typeof(string))
+                builder.AddStringField(propertyAttribute?.Name,
+                    defaultValue: Convert.ToString(property.GetValue(signal.Config)),
+                    tooltipContent: propertyAttribute.Description);
+            if(property.PropertyType == typeof(bool))
+                builder.AddBoolField(propertyAttribute?.Name,
+                    defaultValue: Convert.ToBoolean(property.GetValue(signal.Config)),
+                    tooltipContent: propertyAttribute.Description);
+
         }
 
         var window = builder.Build();
@@ -48,6 +59,7 @@ public class EditConfigRule:AbstractSignalRule<ConfigurationSignals.EditConfig>
             {
                 propertyInfos[key].SetValue(signal.Config, values[key]);
             }
+            signal.OnEdited?.Invoke(signal.Config);
         }
     }
 

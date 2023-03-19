@@ -5,7 +5,7 @@ using System.Threading;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Tools;
 
-namespace CNC_CAM.Machine.CNC.Controllers
+namespace CNC_CAM.Machine.Controllers
 {
     public class DummyCncController2D : AbstractController2D
     {
