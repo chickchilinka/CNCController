@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using CNC_CAM.Machine.GCode;
 
-namespace CNC_CAM.Machine.CNC.Controllers
+namespace CNC_CAM.Machine.Controllers
 {
     public abstract class AbstractController2D
     {

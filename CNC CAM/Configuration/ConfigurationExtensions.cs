@@ -7,7 +7,7 @@ public static class ConfigurationExtensions
 {
     public static Vector ConvertVectorToPhysical(this CurrentConfiguration currentConfiguration, Vector position)
     {
-        var worksheetConfig = currentConfiguration.GetCurrentConfig < WorksheetConfig>();
+        var worksheetConfig = currentConfiguration.GetCurrentConfig<WorksheetConfig>();
         var controlConfig = currentConfiguration.GetCurrentConfig<CNCControlSettings>();
         position *= worksheetConfig.PxToMmFactor;
         double x = position.X;

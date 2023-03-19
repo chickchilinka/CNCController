@@ -2,6 +2,7 @@
 using CNC_CAM.Base;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
+using CNC_CAM.Configuration.View;
 using CNC_CAM.Machine.Configs;
 using CNC_CAM.Tools;
 using CNC_CAM.Tools.Serialization;
@@ -31,6 +32,9 @@ namespace CNC_CAM
             _scope.Install();
             _container = _scope.Container;
             _signalBus = _container.Resolve<SignalBus>();
+            var window = _container.Resolve<SelectConfigurationWindow>();
+            window.Initialize(typeof(CNCControlSettings));
+            window.Show();
             Exit += OnExit;
             _mainWindow = new MainWindow(_container);
             _mainWindow.Show();

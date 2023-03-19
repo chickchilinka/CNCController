@@ -18,7 +18,6 @@
 
     <ItemGroup>
       <Folder Include="bin\Debug\net6.0-windows" />
-      <Folder Include="Machine" />
       <Folder Include="RibbonElements" />
       <Folder Include="UI" />
       <Folder Include="Workspaces\Factory" />
@@ -45,6 +44,10 @@
     <ItemGroup>
       <None Remove="Images\Svg_Icon.png" />
       <Resource Include="Images\Svg_Icon.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Configuration\Attributes\ConfigNameAttribute.cs" />
     </ItemGroup>
 
 </Project>

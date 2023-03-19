@@ -6,14 +6,12 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using CNC_CAM.Base;
 using CNC_CAM.Configuration;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
-using CNC_CAM.SVG.Elements;
 using CNC_CAM.SVG.Parsers;
 using CNC_CAM.Tools;
 using Vector = System.Windows.Vector;
 
-namespace CNC_CAM.Machine.CNC.Controllers
+namespace CNC_CAM.Machine.Controllers
 {
     public class NotCompleteMessageException : Exception
     {

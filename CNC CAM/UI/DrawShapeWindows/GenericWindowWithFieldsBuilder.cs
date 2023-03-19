@@ -72,13 +72,16 @@ namespace CNC_CAM.UI.DrawShapeWindows
             return this;
         }
 
-        public GenericWindowWithFieldsBuilder AddSimpleFloatField(string fieldName, double width = 100, float defaultValue = 0, object tooltipContent = null)
+
+        public GenericWindowWithFieldsBuilder AddStringField(string fieldName, string defaultValue,
+            double width = 100, object tooltipContent = null)
         {
-            var control = new GenericField<float>()
+            var control = new GenericField<string>()
             {
                 FieldName = fieldName,
                 InputWidth = width,
                 Margin = _margin,
+                NumericOnly = false,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Value = defaultValue.ToString(),
                 TooltipContent = tooltipContent
@@ -87,19 +90,56 @@ namespace CNC_CAM.UI.DrawShapeWindows
             return this;
         }
 
+        public GenericWindowWithFieldsBuilder AddBoolField(string fieldName,
+            bool defaultValue = false, object tooltipContent = null)
+        {
+            var control = new LabeledCheckbox()
+            {
+                FieldName = fieldName,
+                Margin = _margin,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Value = defaultValue,
+                TooltipContent = tooltipContent
+            };
+            _controlsToAdd.Add(control);
+            return this;
+        }
+        public GenericWindowWithFieldsBuilder AddSimpleFloatField(string fieldName, double width = 100, float defaultValue = 0, object tooltipContent = null)
+        {
+            var control = new GenericField<float>()
+            {
+                FieldName = fieldName,
+                InputWidth = width,
+                Margin = _margin,
+                NumericOnly = true,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Value = defaultValue.ToString(),
+                TooltipContent = tooltipContent
+            };
+            _controlsToAdd.Add(control);
+            return this;
+        }
+        
+
         public Window Build()
         {
             var window = new GenericWindowWithFields(_controlsToAdd, () =>
             {
                 Dictionary<string, object> values = new Dictionary<string, object>();
-                Dictionary<string, Vector2> vector2s = new Dictionary<string, Vector2>();
-                Dictionary<string, float> decimals = new Dictionary<string, float>();
                 foreach (var control in _controlsToAdd)
                 {
-                    if(control is Vector2Input)
-                        values.Add(((Vector2Input) control).Header, ((Vector2Input)control).Value);
-                    else if(control is LabeledField)
-                        values.Add(((LabeledField) control).FieldName, (float)((LabeledField)control).NumericValue);
+                    //TODO:Выделить общий интерфейс, разделить LabeledField для строковых типов и числовых 
+                    if(control is Vector2Input vector2Input)
+                        values.Add(vector2Input.Header, vector2Input.Value);
+                    else if (control is LabeledField field)
+                    {
+                        if(field.NumericOnly)
+                            values.Add(field.FieldName, field.NumericValue);
+                        else
+                            values.Add(field.FieldName, field.Value);
+                    }
+                    else if(control is LabeledCheckbox checkbox)
+                        values.Add(checkbox.FieldName, checkbox.Value);
                 }
 
                 _onSubmit(values);

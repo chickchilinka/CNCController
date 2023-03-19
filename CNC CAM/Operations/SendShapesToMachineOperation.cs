@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.CNC.Controllers;
 using CNC_CAM.Machine.Configs;
+using CNC_CAM.Machine.Controllers;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
 using CNC_CAM.SVG.Elements;
@@ -17,23 +17,21 @@ namespace CNC_CAM.Operations
     public class SendShapesToMachineOperation:Operation, IInterruptable
     {
         private Logger _logger;
+        private IContainer _container;
         private AbstractController2D _machineController;
-        private WorkspaceFacade _workspaceFacade;
         private CurrentConfiguration _config;
         private WorkspaceElementStorage _workspaceElementStorage;
         public SendShapesToMachineOperation(IContainer container, AbstractController2D controller2D, WorkspaceFacade workspaceFacade, CurrentConfiguration config) : base("Send to machine")
         {
             _workspaceElementStorage = container.Resolve<WorkspaceElementStorage>();
             _logger = Logger.CreateFor(this);
-            _workspaceFacade = workspaceFacade;
+            _container = container;
             _machineController = controller2D;
             _config = config;
         }
 
         public override void Execute()
         {
-            var gcodes = new List<GCodeCommand>();
-            gcodes.Add(new GCodeCommand(new List<string>{"G90", "G28"}));
             var sequence = GetOptimalSequence();
             List<ICurve> curves = new List<ICurve>();
             foreach (var shape in sequence)
@@ -47,13 +45,10 @@ namespace CNC_CAM.Operations
                     curves.Add((ICurve)shape);
                 }
             }
-            new DrawGCodeWindow().Draw(curves, _config.GetCurrentConfig<AccuracySettings>());
-            foreach (var shape in sequence)
-            {
-                gcodes.AddRange(shape.GenerateGCodeCommands(_config));
-            }
-            gcodes.Add(new GCodeCommand(new List<string>{"G90", "G28"}));
-            _machineController.ExecuteGCodeCommands(gcodes);
+            var window = _container.Resolve<ExportWindow>();
+            window.Initialize(sequence, curves);
+            window.Show();
+           
         }
 
         public void Stop()

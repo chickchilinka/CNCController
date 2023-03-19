@@ -1,0 +1,29 @@
+<Window x:Class="CNC_CAM.UI.Windows.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:view="clr-namespace:CNC_CAM.Configuration.View"
+        xmlns:data="clr-namespace:CNC_CAM.Configuration.Data"
+        mc:Ignorable="d"
+        Title="DrawGCodeWindow" WindowState="Maximized">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="200px"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
+        </ScrollViewer>
+        <StackPanel Grid.Column="1">
+            <StackPanel>
+            <view:SelectConfigurationButton ConfigType="data:AccuracySettings" ConfigName="Accuracy:"></view:SelectConfigurationButton>
+            <view:SelectConfigurationButton ConfigType="data:CNCConnectionSettings" ConfigName="Connection:"></view:SelectConfigurationButton>
+            <view:SelectConfigurationButton ConfigType="data:CNCControlSettings" ConfigName="Control:"></view:SelectConfigurationButton>
+            </StackPanel>
+            <StackPanel Height="35px" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name = "TestExportBtn" Margin="5" Padding="5 0 5 0" Click="TestExportBtn_OnClick">Test Export</Button>
+                <Button Name = "ExportBtn" Margin="5" Padding="5 0 5 0" Click="ExportBtn_OnClick">Export</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

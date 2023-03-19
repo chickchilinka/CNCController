@@ -6,8 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.CNC.Controllers;
 using CNC_CAM.Machine.Configs;
+using CNC_CAM.Machine.Controllers;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Tools;
 

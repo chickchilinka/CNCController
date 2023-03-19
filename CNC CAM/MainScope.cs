@@ -1,6 +1,7 @@
 using System.Linq;
 using CNC_CAM.Base;
 using CNC_CAM.Configuration;
+using CNC_CAM.Machine;
 using CNC_CAM.Operations;
 using CNC_CAM.Tools.Serialization;
 using CNC_CAM.Workspaces;
@@ -25,6 +26,7 @@ public class MainScope:Scope
         _container.Register<OperationsHistory>(Reuse.Singleton);
         new ConfigurationInstaller().Install(Container);
         new WorkspaceInstaller().Install(Container);
+        new MachineInstaller().Install(Container);
         
         var registrations = _container.GetServiceRegistrations()
             .Where(r => r.Factory.Setup.Metadata?.Equals(ContainerExtensions.NonLazy) ?? false)
