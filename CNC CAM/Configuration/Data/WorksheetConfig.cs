@@ -1,66 +1,91 @@
 using System;
 using System.Windows;
 using CNC_CAM.Configuration.Attributes;
+using CNC_CAM.Data.Attributes;
 using Newtonsoft.Json;
 
 namespace CNC_CAM.Configuration.Data
 {
-    [JsonObject(MemberSerialization.OptIn)]
+    [JsonObject(MemberSerialization.OptIn), Name("Рабочее поле")]
     public class WorksheetConfig:BaseConfig
     {
-        [JsonProperty] private Vector _boundsMax = new Vector(200, 150);
-        [JsonProperty] private Vector _gridSize = new Vector(50, 50);
-        [JsonProperty] private double _pxToMmFactor = 1d;
+        [JsonProperty, DBField] private double _boundsMaxX = 200;
+        [JsonProperty, DBField] private double _boundsMaxY = 150;
+        [JsonProperty, DBField] private double _boundsMinX = 0;
+        [JsonProperty, DBField] private double _boundsMinY = 0;
+        [JsonProperty, DBField] private double _gridSizeX = 50;
+        [JsonProperty, DBField] private double _gridSizeY = 50;
+        [JsonProperty, DBField] private double _scale = 0.5d;
 
-        [ConfigProperty("Right Boundary")]
-        public double MaxX
+        [ConfigProperty("Левая граница X")]
+        public double MinX
         {
-            get => _boundsMax.X;
+            get => _boundsMinX;
             set
             {
-                _boundsMax = _boundsMax with { X = value };
+                _boundsMinX = value;
                 HandleChange();
             }
         }
-        [ConfigProperty("Bottom Boundary")]
-        public double MaxY
+        [ConfigProperty("Верхняя граница Y")]
+        public double MinY
         {
-            get => _boundsMax.Y;
+            get => _boundsMinY;
             set
             {
-                _boundsMax = _boundsMax with { Y = value };
+                _boundsMinY = value;
+                HandleChange();
+            }
+        }
+        [ConfigProperty("Правая граница X")]
+        public double MaxX
+        {
+            get => _boundsMaxX;
+            set
+            {
+                _boundsMaxX = value;
+                HandleChange();
+            }
+        }
+        [ConfigProperty("Нижняя Граница Y")]
+        public double MaxY
+        {
+            get => _boundsMaxY;
+            set
+            {
+                _boundsMaxY = value;
                 HandleChange();
             }
         }
         
-        [ConfigProperty("Grid Size X")]
+        [ConfigProperty("Размер сетки X")]
         public double GridSizeX
         {
-            get => _gridSize.X;
+            get => _gridSizeX;
             set
             {
-                _gridSize = _gridSize with { X = value };
+                _gridSizeX = value;
                 HandleChange();
             }
         }
-        [ConfigProperty("Grid Size Y")]
+        [ConfigProperty("Размер сетки Y")]
         public double GridSizeY
         {
-            get => _gridSize.Y;
+            get => _gridSizeY;
             set
             {
-                _gridSize = _gridSize with { Y = value };
+                _gridSizeY = value;
                 HandleChange();
             }
         }
 
         [ConfigProperty("MM per pixel")]
-        public double PxToMmFactor
+        public double Scale
         {
-            get => _pxToMmFactor;
+            get => _scale;
             set
             {
-                _pxToMmFactor = value;
+                _scale = value;
                 HandleChange();
             }
         }

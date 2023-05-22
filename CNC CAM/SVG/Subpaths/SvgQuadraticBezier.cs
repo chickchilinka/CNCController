@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 
 namespace CNC_CAM.SVG.Subpaths
 {
@@ -66,7 +65,7 @@ namespace CNC_CAM.SVG.Subpaths
             return new SvgQuadraticBezier(p0, p1, p2);
         }
 
-        public override List<Vector> Linearize(AccuracySettings accuracy)
+        public override List<Vector> Linearize(double accuracy)
         {
             var points = new List<Vector>() { GetPointAt(0) };
             points.AddRange(this.GetPointsBetween(0, 1, accuracy));
@@ -85,7 +84,7 @@ namespace CNC_CAM.SVG.Subpaths
             return points;
         }
 
-        private List<Vector> OptimizePoints(List<Vector> points, AccuracySettings accuracySettings)
+        private List<Vector> OptimizePoints(List<Vector> points, UserSettings userSettings)
         {
             double sum = (ToGlobalPoint(StartPoint) - points[0]).Length;
             for (int i = 1; i < points.Count; i++)
@@ -93,7 +92,7 @@ namespace CNC_CAM.SVG.Subpaths
                 sum += (points[i] - points[i - 1]).Length;
             }
 
-            double stepSize = accuracySettings.Accuracy / (sum * 10);
+            double stepSize = userSettings.Accuracy / (sum * 10);
             points.Clear();
             for (double i = 0; i <= 1d; i += stepSize)
             {

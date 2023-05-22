@@ -5,7 +5,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
 using Shape = System.Windows.Shapes.Shape;
@@ -35,7 +34,7 @@ public class SvgPolyline : SvgElement, ICurve
     public override List<GCodeCommand> GenerateGCodeCommands(CurrentConfiguration config)
     {
         List<string> commands = new List<string>();
-        List<Vector> points = Linearize(config.GetCurrentConfig<AccuracySettings>());
+        List<Vector> points = Linearize(config.Get<UserSettings>().Accuracy);
         if (points.Count == 0) return new List<GCodeCommand>();
         commands.AddRange(GCodeBuilder2D.WithAbsoluteMove(config, points[0]).SetHeadDownAtStart(false)
             .SetHeadDownAtEnd(true).Build());
@@ -47,7 +46,7 @@ public class SvgPolyline : SvgElement, ICurve
         return new List<GCodeCommand> { new(commands) };
     }
 
-    public virtual List<Vector> Linearize(AccuracySettings accuracy)
+    public virtual List<Vector> Linearize(double accuracy)
     {
         return Points.Select(ToGlobalPoint).ToList();
     }

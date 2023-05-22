@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using CNC_CAM.Configuration.Attributes;
 using CNC_CAM.Configuration.Data;
@@ -15,11 +13,6 @@ namespace CNC_CAM.Configuration.View;
 
 public partial class SelectConfigurationButton
 {
-    public class PropertyRow
-    {
-        public string Name { get; set; }
-        public object Value { get; set; }
-    }
     public Type ConfigType { get; set; }
     public string ConfigName { get; set; }
 
@@ -52,7 +45,7 @@ public partial class SelectConfigurationButton
     {
         if(type!=ConfigType)
             return;
-        var config = _currentConfiguration.GetCurrentConfig(ConfigType);
+        var config = _currentConfiguration.Get(ConfigType);
         FillLabels(config);
     }
     protected override void OnRender(DrawingContext drawingContext)
@@ -66,9 +59,9 @@ public partial class SelectConfigurationButton
     }
     private void SelectButton_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectConfigurationWindow window = _container.Resolve<SelectConfigurationWindow>();
+        ManageConfigurationWindow window = _container.Resolve<ManageConfigurationWindow>();
         window.Initialize(ConfigType);
-        window.Show();
+        window.ShowDialog();
     }
 
     private void FillLabels(BaseConfig config)

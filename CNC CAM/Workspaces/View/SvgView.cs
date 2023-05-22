@@ -13,39 +13,42 @@ namespace CNC_CAM.Workspaces.View;
 
 public class SvgView : Grid, IDisposable, IWorkspaceElementView<WorkspaceElement<SvgRoot>>
 {
+    public WorkspaceElement Element => _workspaceElement;
     private Dictionary<SvgElement, Shape> _shapes;
     private WPFViewFactory _factory;
+    private SignalBus _signalBus;
     private SvgRoot _svgRoot;
+    private WorkspaceElement<SvgRoot> _workspaceElement;
     public Rect Bounds { get; private set; }
 
-    public SvgView(WPFViewFactory factory)
+    public SvgView(WPFViewFactory factory, SignalBus signalBus)
     {
-        _factory = factory;
+        _signalBus = signalBus;
+        _factory = factory; 
     }
+    
+    public void Initialize(WorkspaceElement element)
+    {
+        Initialize(element as WorkspaceElement<SvgRoot>);
+    }
+
 
     public void Initialize(WorkspaceElement<SvgRoot> workspaceElement)
     {
-        _svgRoot = workspaceElement.Element;
+        _workspaceElement = workspaceElement;
+        _svgRoot = workspaceElement.TransformElement;
         _shapes = _factory.GetShapes(_svgRoot);
         foreach (var shape in _shapes.Values)
         {
             Children.Add(shape);
-            shape.MouseDown += OnMouseDown;
+            shape.MouseDown += ViewOnMouseDown;
             shape.InvalidateMeasure();
         }
         _svgRoot.OnChange += ApplyTransformationMatrixToWpf;
         ApplyTransformationMatrixToWpf();
         InvalidateArrange();
         InvalidateMeasure();
-        // CalculateViewRect();
     }
-
-    protected override void OnRender(DrawingContext dc)
-    {
-        base.OnRender(dc);
-        // CalculateViewRect();
-    }
-
 
     private void CalculateViewRect()
     {
@@ -74,7 +77,7 @@ public class SvgView : Grid, IDisposable, IWorkspaceElementView<WorkspaceElement
         {
             var scale = element.FinalMatrix.ExtractScale();
             _shapes[element].RenderTransform = new MatrixTransform(element.FinalMatrix);
-            _shapes[element].StrokeThickness *= 1 / scale.X;
+            _shapes[element].StrokeThickness = 1 / scale.X;
             _shapes[element].InvalidateVisual();
         }
         CalculateViewRect();
@@ -85,13 +88,12 @@ public class SvgView : Grid, IDisposable, IWorkspaceElementView<WorkspaceElement
         _svgRoot.OnChange -= ApplyTransformationMatrixToWpf;
         foreach (var shape in _shapes)
         {
-            shape.Value.MouseDown-= OnMouseDown;
+            shape.Value.MouseDown -= ViewOnMouseDown;
         }
     }
 
-    private void OnMouseDown(object sender, MouseButtonEventArgs e)
+    private void ViewOnMouseDown(object sender, MouseButtonEventArgs e)
     {
-        
+        _signalBus.Fire(new WorkspaceSignals.SelectElement(_workspaceElement));
     }
-
 }

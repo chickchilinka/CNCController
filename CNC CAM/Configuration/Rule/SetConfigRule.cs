@@ -1,17 +1,18 @@
 using CNC_CAM.Base;
+using CNC_CAM.Tools.Serialization;
 
 namespace CNC_CAM.Configuration.Rule;
 
 public class SetConfigRule:AbstractSignalRule<ConfigurationSignals.SetConfig>
 {
-    private CurrentConfiguration _currentConfiguration;
-    public SetConfigRule(CurrentConfiguration configuration, SignalBus signalBus) : base(signalBus)
+    private ConfigurationStorage _configurationStorage;
+    public SetConfigRule(ConfigurationStorage configurationStorage, SignalBus signalBus) : base(signalBus)
     {
-        _currentConfiguration = configuration;
+        _configurationStorage = configurationStorage;
     }
 
     protected override void OnSignalFired(ConfigurationSignals.SetConfig signal)
     {
-        _currentConfiguration.SetCurrentConfig(signal.Config);
+        _configurationStorage.SetAsLast(signal.Config);
     }
 }

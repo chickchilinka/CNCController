@@ -10,19 +10,19 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="200px"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
         </ScrollViewer>
         <StackPanel Grid.Column="1">
             <StackPanel>
-            <view:SelectConfigurationButton ConfigType="data:AccuracySettings" ConfigName="Accuracy:"></view:SelectConfigurationButton>
-            <view:SelectConfigurationButton ConfigType="data:CNCConnectionSettings" ConfigName="Connection:"></view:SelectConfigurationButton>
-            <view:SelectConfigurationButton ConfigType="data:CNCControlSettings" ConfigName="Control:"></view:SelectConfigurationButton>
+            <view:SelectConfigurationButton ConfigType="data:UserSettings" ConfigName="Настройки пользователя:"></view:SelectConfigurationButton>
+            <view:SelectConfigurationButton ConfigType="data:MachineConfig" ConfigName="Настройки станка:"></view:SelectConfigurationButton>
+            <view:SelectConfigurationButton ConfigType="data:DrawingHeadConfig" ConfigName="Настройки пишущей головки:"></view:SelectConfigurationButton>
             </StackPanel>
             <StackPanel Height="35px" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Name = "TestExportBtn" Margin="5" Padding="5 0 5 0" Click="TestExportBtn_OnClick">Test Export</Button>
-                <Button Name = "ExportBtn" Margin="5" Padding="5 0 5 0" Click="ExportBtn_OnClick">Export</Button>
+                <Button Name = "TestExportBtn" Margin="5" Padding="5 0 5 0" Click="TestExportBtn_OnClick">Экспорт в файл</Button>
+                <Button Name = "ExportBtn" Margin="5" Padding="5 0 5 0" Click="ExportBtn_OnClick">Запустить</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

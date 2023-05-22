@@ -4,7 +4,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
 using Transform = CNC_CAM.SVG.Subpaths.Transform;
@@ -89,7 +88,7 @@ namespace CNC_CAM.SVG.Elements
             };
         }
         
-        public List<Vector> Linearize(AccuracySettings accuracy)
+        public List<Vector> Linearize(double accuracy)
         {
             return null;
         }

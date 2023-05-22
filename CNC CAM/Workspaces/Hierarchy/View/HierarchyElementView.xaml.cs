@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -15,8 +16,10 @@ public partial class HierarchyElementView : UserControl
     }
 
     protected WorkspaceElement WorkspaceElement;
-    public HierarchyElementView(WorkspaceElement element)
+    private SignalBus _signalBus;
+    public HierarchyElementView(SignalBus signalBus, WorkspaceElement element)
     {
+        _signalBus = signalBus;
         WorkspaceElement = element;
         InitializeComponent();
         Label.Content = element.Name;
@@ -28,5 +31,10 @@ public partial class HierarchyElementView : UserControl
     {
         Uri oUri = new Uri("pack://application:,,,/Images/"  + psResourceName);
         return new BitmapImage(oUri);
+    }
+
+    private void Delete_OnClick(object sender, RoutedEventArgs e)
+    {
+        _signalBus.Fire(new WorkspaceSignals.DeleteElement(WorkspaceElement));
     }
 }

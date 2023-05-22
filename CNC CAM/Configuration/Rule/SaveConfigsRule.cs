@@ -1,17 +1,36 @@
+using System.Linq;
 using CNC_CAM.Base;
+using CNC_CAM.Configuration.Data;
+using CNC_CAM.Data;
+using CNC_CAM.Tools;
+using CNC_CAM.Tools.Serialization;
 
 namespace CNC_CAM.Configuration.Rule;
 
-public class SaveConfigsRule:AbstractSignalRule<AppSignals.Exit>
+public class SaveConfigsRule : AbstractSignalRule<ConfigurationSignals.SaveConfigs>
 {
-    private CurrentConfiguration _currentConfiguration;
-    public SaveConfigsRule(CurrentConfiguration currentConfiguration,SignalBus signalBus) : base(signalBus)
+    private ConfigurationStorage _configurationStorage;
+    private DBService _dbService;
+
+    public SaveConfigsRule(ConfigurationStorage configurationStorage, SignalBus signalBus,
+        DBService dbService) : base(signalBus)
     {
-        _currentConfiguration = currentConfiguration;
+        _configurationStorage = configurationStorage;
+        _dbService = dbService;
     }
 
-    protected override void OnSignalFired(AppSignals.Exit signal)
+    protected override void OnSignalFired(ConfigurationSignals.SaveConfigs signal)
     {
-        _currentConfiguration.SaveConfig();
+        foreach (var collection in _configurationStorage.Configs.Values)
+        {
+            foreach (var config in collection)
+            {
+                _dbService.Save(config);
+            }
+        }
+
+        var mainConfig = new Config("default");
+        mainConfig.SetLastIds(_configurationStorage.LastConfigurations);
+        _dbService.Save(mainConfig);
     }
 }

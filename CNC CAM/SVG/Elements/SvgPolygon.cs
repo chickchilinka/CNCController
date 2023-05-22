@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 
 namespace CNC_CAM.SVG.Elements;
 
@@ -27,9 +26,9 @@ public class SvgPolygon:SvgPolyline
         return WpfShapes;
     }
 
-    public override List<Vector> Linearize(AccuracySettings accuracySettings)
+    public override List<Vector> Linearize(double accuracy)
     {
-        List<Vector> points = base.Linearize(accuracySettings);
+        List<Vector> points = base.Linearize(accuracy);
         if(points.Count>0)
             points.Add(points[0]);
         return points;

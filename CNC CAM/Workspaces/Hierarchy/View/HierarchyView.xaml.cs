@@ -37,7 +37,7 @@ public partial class HierarchyView : UserControl
 
     private TreeViewItem CreateTreeViewItem(WorkspaceElement workspaceElement)
     {
-        var elementView = new HierarchyElementView(workspaceElement);
+        var elementView = new HierarchyElementView(_signalBus, workspaceElement);
         var treeItemView = new CustomTreeViewItem(_signalBus, workspaceElement)
         {
             Header = elementView

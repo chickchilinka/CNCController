@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using CNC_CAM.Configuration;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Shapes;
 using WpfShape = System.Windows.Shapes.Shape;

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Windows;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.SVG.Elements;
 using CNC_CAM.Tools;
 using DryIoc;
@@ -28,14 +27,14 @@ namespace CNC_CAM.Machine.GCode
         protected bool? HeadDownAtStart;
         protected bool? HeadDownAtEnd;
         protected CurrentConfiguration CurrentConfiguration;
-        protected CNCHeadSettings HeadSettings;
-        protected CNCControlSettings ControlSettings;
+        protected DrawingHeadConfig DrawingHeadConfig;
+        protected MachineConfig ControlSettings;
 
         protected GCodeBuilder2D(CurrentConfiguration currentConfiguration)
         {
             CurrentConfiguration = currentConfiguration;
-            HeadSettings = CurrentConfiguration.GetCurrentConfig<CNCHeadSettings>();
-            ControlSettings = CurrentConfiguration.GetCurrentConfig<CNCControlSettings>();
+            DrawingHeadConfig = CurrentConfiguration.Get<DrawingHeadConfig>();
+            ControlSettings = CurrentConfiguration.Get<MachineConfig>();
             Logger = Logger.CreateForClass(this.GetType());
         }
 
@@ -55,7 +54,7 @@ namespace CNC_CAM.Machine.GCode
         {
             if (HeadDownAtStart != null)
             {
-                var headConfig = CurrentConfiguration.GetCurrentConfig<CNCHeadSettings>();
+                var headConfig = CurrentConfiguration.Get<DrawingHeadConfig>();
                 var headPosStart = HeadDownAtStart == true
                     ? headConfig.HeadDown
                     : headConfig.HeadUp;
@@ -67,7 +66,7 @@ namespace CNC_CAM.Machine.GCode
         {
             if (HeadDownAtEnd != null)
             {
-                var headPosEnd = HeadDownAtEnd == true ? HeadSettings.HeadDown : HeadSettings.HeadUp;
+                var headPosEnd = HeadDownAtEnd == true ? DrawingHeadConfig.HeadDown : DrawingHeadConfig.HeadUp;
                 commandsSequence.Add($"G00 {ControlSettings.AxisZ}{headPosEnd}");
             }
         }

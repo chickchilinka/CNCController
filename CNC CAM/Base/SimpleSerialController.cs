@@ -2,7 +2,6 @@ using System;
 using System.IO.Ports;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Tools;
 
 namespace CNC_CAM.Base
@@ -21,8 +20,8 @@ namespace CNC_CAM.Base
 
         public static SimpleSerialController CreateSerialController(CurrentConfiguration config)
         {
-            var connectionConfig = config.GetCurrentConfig<CNCConnectionSettings>();
-            return new SimpleSerialController(new SerialPort(connectionConfig.ComPort, connectionConfig.BaudRate));
+            var machineConfig = config.Get<MachineConfig>();
+            return new SimpleSerialController(new SerialPort(machineConfig.ComPort, machineConfig.BaudRate));
         }
 
         public void SendString(string message)

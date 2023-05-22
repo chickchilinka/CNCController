@@ -8,34 +8,29 @@ namespace CNC_CAM.Configuration;
 
 public class CurrentConfiguration
 {
-    private SerializationService _serializationService;
     private ConfigurationStorage _configurationStorage;
-    public event Action<Type> OnCurrentConfigChanged = delegate {};
-    public CurrentConfiguration(ConfigurationStorage configurationStorage, SerializationService serializationService)
+    public event Action<Type> OnCurrentConfigChanged
+    {
+        add
+        {
+            _configurationStorage.OnCurrentConfigChanged += value;
+        }
+        remove
+        {
+            _configurationStorage.OnCurrentConfigChanged -= value;
+        }
+    }
+    public CurrentConfiguration(ConfigurationStorage configurationStorage)
     {
         _configurationStorage = configurationStorage;
-        _serializationService = serializationService;
     }
-    public TConfig GetCurrentConfig<TConfig>() where TConfig : BaseConfig
+    public TConfig Get<TConfig>() where TConfig : BaseConfig
     {
         return _configurationStorage.GetLast<TConfig>();
     }
     
-    public BaseConfig GetCurrentConfig(Type type)
+    public BaseConfig Get(Type type)
     {
         return _configurationStorage.GetLast(type);
     }
-
-    public void SetCurrentConfig(BaseConfig config)
-    {
-        _configurationStorage.SetAsLast(config);
-        OnCurrentConfigChanged?.Invoke(config.GetType());
-    }
-    
-
-    public void SaveConfig()
-    {
-        _serializationService.Serialize(Const.Paths.ConfigurationsPath, Const.Paths.LastConfigsFilename, _configurationStorage);
-    }
-    
 }

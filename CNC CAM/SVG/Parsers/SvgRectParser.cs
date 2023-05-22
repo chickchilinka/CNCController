@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.Text;
 using System.Xml;
 using CNC_CAM.Tools;
 using CNC_CAM.SVG.Elements;
@@ -37,14 +39,24 @@ public class SvgRectParser:SvgPathDataParser
     
     public string GetPathDataAnalog(double x, double y, double w, double h, double rx, double ry)
     {
-        var result = $"M {x + rx},{y} h {w - rx*2} ";
-        result+= rx>0? $"a {rx},{ry} 0 0 1 {rx},{ry} ":string.Empty;
-        result+= $"v {h-ry*2} ";
-        result += rx>0? $"a {rx},{ry} 0 0 1 {-rx},{ry} ":string.Empty;
-        result+= $"h {-w + rx*2} ";
-        result+= rx>0? $"a {rx},{ry} 0 0 1 {-rx},{-ry} ":string.Empty;
-        result+= $"v {-h+ry*2} ";
-        result+= rx>0? $"a {rx},{ry} 0 0 1 {rx},{-ry} ":string.Empty;
-        return result ;
+        FormattableString topLine = $"M {x + rx},{y} h {w - rx*2} ";
+        FormattableString rightTopArc = $"a {rx},{ry} 0 0 1 {rx},{ry} ";
+        FormattableString rightLine = $"v {h - ry * 2} ";
+        FormattableString rightBottomArc = $"a {rx},{ry} 0 0 1 {-rx},{ry} ";
+        FormattableString bottomLine = $"h {-w + rx * 2} ";
+        FormattableString bottomLeftArc = $"a {rx},{ry} 0 0 1 {-rx},{-ry} ";
+        FormattableString leftLine = $"v {-h + ry * 2} ";
+        FormattableString leftTopArc = $"a {rx},{ry} 0 0 1 {rx},{-ry} ";
+        FormattableString.Invariant(topLine);
+        StringBuilder result = new StringBuilder(FormattableString.Invariant(topLine));
+        result.Append(rx>0? FormattableString.Invariant(rightTopArc):string.Empty);
+        result.Append(FormattableString.Invariant(rightLine));
+        result.Append(rx>0? FormattableString.Invariant(rightBottomArc):string.Empty);
+        result.Append(FormattableString.Invariant(bottomLine));
+        result.Append(rx>0? FormattableString.Invariant(bottomLeftArc):string.Empty);
+        result.Append(FormattableString.Invariant(leftLine));
+        result.Append(rx>0? FormattableString.Invariant(leftTopArc):string.Empty);
+
+        return result.ToString();
     }
 }

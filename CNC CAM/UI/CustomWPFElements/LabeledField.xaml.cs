@@ -23,7 +23,14 @@ namespace CNC_CAM.UI.CustomWPFElements
         public event Action<string> OnChanged;
         public event Action<double> OnChangedNumeric;
         private bool _numericOnly = true;
+        private string _inputMatcher;
 
+
+        public string InputMatcher
+        {
+            get => _inputMatcher;
+            set => _inputMatcher = value;
+        }
         public bool NumericOnly
         {
             get => _numericOnly;
@@ -81,8 +88,8 @@ namespace CNC_CAM.UI.CustomWPFElements
         {
             if (_numericOnly)
             {
-                var text = InputBox.Text + e.Text;
-                e.Handled = !Regex.IsMatch(text, Const.RegexPatterns.DecimalMatcher);
+                var text = InputBox.Text.Insert(InputBox.CaretIndex, e.Text);
+                e.Handled = !Regex.IsMatch(text, InputMatcher);
             }
             else e.Handled = false;
         }

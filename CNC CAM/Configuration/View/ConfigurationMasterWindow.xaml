@@ -1,0 +1,68 @@
+<Window x:Class="CNC_CAM.Configuration.View.ConfigurationMasterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:CNC_CAM.Configuration.View"
+        xmlns:customWpfElements="clr-namespace:CNC_CAM.UI.CustomWPFElements"
+        xmlns:tools="clr-namespace:CNC_CAM.Tools"
+        mc:Ignorable="d"
+        Title="Мастер конфигурации"
+        SizeToContent="WidthAndHeight"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+    <Grid HorizontalAlignment="Left">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical">
+            <Label Margin="5 0">1. Установка соединения</Label>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Label>USB Порт:</Label>
+                <ComboBox x:Name="PortsList" Width="100" ItemsSource="{Binding Path=Ports}">
+                </ComboBox>
+                <customWpfElements:LabeledField Margin="50 0 0 0"
+                                                InputMatcher="{x:Static tools:RegexPatterns.IntInputMatcher}"
+                                                NumericOnly="true" FieldName="Baud Rate">
+                </customWpfElements:LabeledField>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Label>Статус: Подключено к станку с GRBL 1.1h</Label>
+                <TextBlock></TextBlock>
+            </StackPanel>
+            <Label Margin="5 0">2. Установка количества шагов двигателей на миллиметр</Label>
+            <StackPanel x:Name="SpeedSetupPanel" Orientation="Vertical" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <customWpfElements:LabeledField InputMatcher="{x:Static tools:RegexPatterns.DecimalInputMatcher}"
+                                                    NumericOnly="true" FieldName="Ось X">
+                    </customWpfElements:LabeledField>
+                    <customWpfElements:LabeledField InputMatcher="{x:Static tools:RegexPatterns.DecimalInputMatcher}"
+                                                    NumericOnly="true" FieldName="Ось Y">
+                    </customWpfElements:LabeledField>
+                    <customWpfElements:LabeledField InputMatcher="{x:Static tools:RegexPatterns.DecimalInputMatcher}"
+                                                    NumericOnly="true" FieldName="Ось Z">
+                    </customWpfElements:LabeledField>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Padding="25 0 ">Тест</Button>
+                    <customWpfElements:LabeledField InputMatcher="{x:Static tools:RegexPatterns.DecimalInputMatcher}"
+                                                    NumericOnly="true" FieldName="Было пройдено (мм.)">
+                    </customWpfElements:LabeledField>
+                </StackPanel>
+            </StackPanel>
+            <Label Margin="5 0">3. Установка холостого и рабочего положения инструмента</Label>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <customWpfElements:LabeledField InputMatcher="{x:Static tools:RegexPatterns.DecimalInputMatcher}"
+                                                NumericOnly="true" FieldName="Холостой">
+                </customWpfElements:LabeledField>
+                <customWpfElements:LabeledField InputMatcher="{x:Static tools:RegexPatterns.DecimalInputMatcher}"
+                                                NumericOnly="true" FieldName="Рабочий">
+                </customWpfElements:LabeledField>
+                <Button Margin="25 0 0 0" Padding="25 0 ">Тест</Button>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="5">
+            <Button Padding="5">Сохранить</Button>
+        </StackPanel>
+    </Grid>
+</Window>

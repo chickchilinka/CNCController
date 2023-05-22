@@ -13,12 +13,12 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <Label x:Name="ConfigLabel" Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ConfigName}"></Label>
-            <Button x:Name = "SelectButton" Margin="5" Click="SelectButton_OnClick" Padding="5 0 5 0">Select...</Button>
+            <Button x:Name = "SelectButton" Margin="5" Click="SelectButton_OnClick" Padding="5 0 5 0">Выбрать...</Button>
         </StackPanel>
         <DataGrid x:Name = "PropertiesGrid" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl},Path=PropertyRows }">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="*"/>
-                <DataGridTextColumn Header="Value" Binding="{Binding Path=Value}" Width="*"/>
+                <DataGridTextColumn Header="Параметр" Binding="{Binding Path=Name}" Width="*"/>
+                <DataGridTextColumn Header="Значение" Binding="{Binding Path=Value}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

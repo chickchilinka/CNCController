@@ -8,15 +8,15 @@ namespace CNC_CAM.Machine.Rule;
 
 public class ExportShapesRule : AbstractSignalRule<MachineSignals.ExportShapes>
 {
-    private SimpleCncSerialController2D _simpleSerialController;
+    private DrawingHeadController _serialController;
     private DummyCncController2D _dummyCncController2D;
     private CurrentConfiguration _currentConfiguration;
 
-    public ExportShapesRule(SimpleCncSerialController2D serialController, DummyCncController2D dummyCncController2D,
+    public ExportShapesRule(DrawingHeadController serialController, DummyCncController2D dummyCncController2D,
         CurrentConfiguration currentConfiguration, SignalBus signalBus) : base(signalBus)
     {
         _currentConfiguration = currentConfiguration;
-        _simpleSerialController = serialController;
+        _serialController = serialController;
         _dummyCncController2D = dummyCncController2D;
     }
 
@@ -33,6 +33,6 @@ public class ExportShapesRule : AbstractSignalRule<MachineSignals.ExportShapes>
         if(signal.TestMode)
             _dummyCncController2D.ExecuteGCodeCommands(gcodes);
         else
-            _simpleSerialController.ExecuteGCodeCommands(gcodes);
+            _serialController.ExecuteGCodeCommands(gcodes);
     }
 }

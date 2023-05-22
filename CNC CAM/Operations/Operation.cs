@@ -9,6 +9,5 @@ namespace CNC_CAM.Operations
             Name = name;
         }
         public abstract void Execute();
-        public abstract void Undo();
     }
 }

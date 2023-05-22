@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:CNC_CAM.Workspaces.Hierarchy.View"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="Auto" d:DesignWidth="Auto">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label>Hierarchy</Label>
-        <TreeView Grid.Row="1" x:Name="HierarchyTreeView">
+        <Label>Объекты</Label>
+        <TreeView Grid.Row="1" x:Name="HierarchyTreeView" Margin="5">
         </TreeView>
     </Grid>
 </UserControl>

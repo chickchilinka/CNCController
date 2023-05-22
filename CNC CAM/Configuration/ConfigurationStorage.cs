@@ -14,7 +14,7 @@ public class ConfigurationStorage
     internal Dictionary<Type, ObservableCollection<BaseConfig>> Configs = new();
     [JsonProperty] 
     internal Dictionary<Type, string> LastConfigurations = new();
-
+    public event Action<Type> OnCurrentConfigChanged = delegate {};
     public void RegisterConfig<TConfig>(TConfig config) where TConfig : BaseConfig
     {
         var type = config.GetType();
@@ -29,9 +29,18 @@ public class ConfigurationStorage
         if (!LastConfigurations.ContainsKey(type))
         {
             LastConfigurations.Add(type, config.Id);
+            config.SubscribeToChange(ConfigChanged);
+            OnCurrentConfigChanged?.Invoke(type);
             return;
         }
+        Get(type, LastConfigurations[type]).UnsubscribeFromChange(ConfigChanged);
         LastConfigurations[type] = config.Id;
+        config.SubscribeToChange(ConfigChanged);
+        OnCurrentConfigChanged?.Invoke(type);
+        void ConfigChanged()
+        {
+            OnCurrentConfigChanged?.Invoke(type);
+        }
     }
 
     public ObservableCollection<BaseConfig> GetAll(Type type) 

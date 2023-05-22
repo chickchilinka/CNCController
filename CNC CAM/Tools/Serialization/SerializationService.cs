@@ -11,14 +11,21 @@ public class SerializationService
     private readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
     {
         TypeNameHandling = TypeNameHandling.All
-    }; 
+    };
+
     public void Serialize<T>(string path, string filename, T obj)
     {
         path = Environment.ExpandEnvironmentVariables(path);
-        var fullPath = path+filename;
+        var fullPath = path + filename;
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
-        File.WriteAllText(fullPath,JsonConvert.SerializeObject(obj, Formatting, _settings));
+        File.WriteAllText(fullPath, JsonConvert.SerializeObject(obj, Formatting, _settings));
+    }
+
+    public void Serialize<T>(string path,  T obj)
+    {
+        path = Environment.ExpandEnvironmentVariables(path);
+        File.WriteAllText(path,JsonConvert.SerializeObject(obj, Formatting, _settings));
     }
 
     public T Deserialize<T>(string path, string filename, T defaultValue)
@@ -31,6 +38,19 @@ public class SerializationService
             if (!File.Exists(path + filename))
                 return defaultValue;
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(path + filename), _settings);
+        }
+        catch (IOException exception)
+        {
+            return defaultValue;
+        }
+    }
+    public T Deserialize<T>(string path, T defaultValue)
+    {
+        try
+        {
+            if (!File.Exists(path))
+                return defaultValue;
+            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path), _settings);
         }
         catch (IOException exception)
         {

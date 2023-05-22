@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
+using CNC_CAM.Tools;
 using CNC_CAM.UI.CustomWPFElements;
 
 namespace CNC_CAM.UI.DrawShapeWindows
@@ -110,6 +111,7 @@ namespace CNC_CAM.UI.DrawShapeWindows
             {
                 FieldName = fieldName,
                 InputWidth = width,
+                InputMatcher = RegexPatterns.DecimalInputMatcher,
                 Margin = _margin,
                 NumericOnly = true,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -119,7 +121,22 @@ namespace CNC_CAM.UI.DrawShapeWindows
             _controlsToAdd.Add(control);
             return this;
         }
-        
+        public GenericWindowWithFieldsBuilder AddSimpleIntField(string fieldName, double width = 100, float defaultValue = 0, object tooltipContent = null)
+        {
+            var control = new GenericField<int>()
+            {
+                FieldName = fieldName,
+                InputWidth = width,
+                InputMatcher = RegexPatterns.IntInputMatcher,
+                Margin = _margin,
+                NumericOnly = true,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Value = defaultValue.ToString(),
+                TooltipContent = tooltipContent
+            };
+            _controlsToAdd.Add(control);
+            return this;
+        }
 
         public Window Build()
         {
@@ -131,6 +148,10 @@ namespace CNC_CAM.UI.DrawShapeWindows
                     //TODO:Выделить общий интерфейс, разделить LabeledField для строковых типов и числовых 
                     if(control is Vector2Input vector2Input)
                         values.Add(vector2Input.Header, vector2Input.Value);
+                    else if (control is IGenericField genericField)
+                    {
+                        values.Add(genericField.FieldName, genericField.GenericValueObject);
+                    }
                     else if (control is LabeledField field)
                     {
                         if(field.NumericOnly)
