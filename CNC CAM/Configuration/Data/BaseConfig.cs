@@ -2,18 +2,27 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CNC_CAM.Configuration.Attributes;
+using CNC_CAM.Data.Attributes;
 using DryIoc.ImTools;
 using Newtonsoft.Json;
 
 namespace CNC_CAM.Configuration.Data;
 
 [JsonObject(MemberSerialization.OptIn)]
-public abstract class BaseConfig:INotifyPropertyChanged
+public abstract class BaseConfig : INotifyPropertyChanged
 {
-    [JsonProperty] 
-    public string Id { get; internal set; } 
-    [JsonProperty] private string _name;
-    [ConfigProperty("Name", "Configuration name")]
+    [JsonProperty, DBField(Priority = 2), DBPrimaryKey]
+    private string _id;
+
+    public string Id
+    {
+        get => _id;
+        private set => _id = value;
+    }
+
+    [JsonProperty, DBField(Priority = 1)] private string _name;
+
+    [ConfigProperty("Название", "Название настройки")]
     public string Name
     {
         get => _name;
@@ -21,28 +30,41 @@ public abstract class BaseConfig:INotifyPropertyChanged
         {
             _name = value;
             HandleChange();
-        } 
+        }
     }
-    [JsonProperty, Attributes.ReadOnly]
-    public DateTime Created { get; private set; }
-    [JsonProperty, Attributes.ReadOnly]
-    public DateTime LastModified { get; private set; }
+
+    [JsonProperty, DBField] private DateTime _created;
+
+    [Attributes.ReadOnly]
+    public DateTime Created
+    {
+        get => _created;
+        private set => _created = value;
+    }
+
+    [JsonProperty, DBField] private DateTime _lastModified;
+
+    [Attributes.ReadOnly]
+    public DateTime LastModified
+    {
+        get => _lastModified;
+        private set => _lastModified = value;
+    }
 
     protected event Action OnChange;
-    
-    public BaseConfig(){}
-    
-    protected void HandleChange()
+
+    protected void HandleChange([CallerMemberName] string propertyName = null)
     {
         LastModified = DateTime.Now;
-        OnPropertyChanged();
+        OnPropertyChanged(propertyName);
     }
 
     public virtual void SubscribeToChange(Action callback)
     {
         OnChange += callback;
     }
-    public virtual void UnsubscribeToChange(Action callback)
+
+    public virtual void UnsubscribeFromChange(Action callback)
     {
         OnChange -= callback;
     }
@@ -63,9 +85,10 @@ public abstract class BaseConfig:INotifyPropertyChanged
         var fields = GetType().GetFields();
         foreach (var field in fields)
         {
-            if(field.IsPrivate)
+            if (field.IsPrivate)
                 field.SetValue(config, field.GetValue(this));
         }
+
         config.Id = config.GetHashCode().ToString();
         config._name = _name;
         config.Created = DateTime.Now;
@@ -78,5 +101,6 @@ public abstract class BaseConfig:INotifyPropertyChanged
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        OnChange?.Invoke();
     }
 }

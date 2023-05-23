@@ -46,4 +46,27 @@ public class ConfigurationSignals
             Config = config;
         }
     }
+
+    public class ImportConfig
+    {
+        public Type ConfigType { get; }
+
+        public ImportConfig(Type configType)
+        {
+            ConfigType = configType;
+        }
+    }
+    public class ExportConfig
+    {
+        public BaseConfig Config { get; }
+
+        public ExportConfig(BaseConfig config)
+        {
+            Config = config;
+        }
+    }
+
+    public class SaveConfigs
+    {
+    }
 }

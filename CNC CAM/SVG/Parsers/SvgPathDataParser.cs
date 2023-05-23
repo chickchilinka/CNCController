@@ -17,7 +17,7 @@ namespace CNC_CAM.SVG.Parsers
         private Vector _currentPoint;
         private bool returnedToStart = false;
         private string lastCommand;
-        private Vector _lastSubpath;
+        private Vector _lastSubpathEnd;
         private SvgCubicBezier _lastCubicBezier;
         public override SvgPath Create(XmlElement element)
         {
@@ -39,7 +39,7 @@ namespace CNC_CAM.SVG.Parsers
             var args = tokens[0].GetCommandArguments();
             _startPoint = new Vector(args[0], args[1]);
             _currentPoint = _startPoint;
-            _lastSubpath = _currentPoint;
+            _lastSubpathEnd = _currentPoint;
             if (args.Length>2 && args.Length % 2 == 0)
             {
                 double[] lineArgs = new double[args.Length - 2];
@@ -116,15 +116,8 @@ namespace CNC_CAM.SVG.Parsers
                     break;
                 case 'Z':
                 case 'z':
-                    if (lastCommand[0] == 'm' || lastCommand[0] == 'M')
-                    {
-                        curve = new SvgLine(new double[]{_lastSubpath.X,_lastSubpath.Y}, _currentPoint,
+                    curve = new SvgLine(new double[]{_lastSubpathEnd.X,_lastSubpathEnd.Y}, _currentPoint,
                             SvgLine.Direction.Both);
-                    }
-                    else
-                    {
-                        _currentPoint = _lastSubpath;
-                    }
                     break;
             }
 
@@ -150,12 +143,12 @@ namespace CNC_CAM.SVG.Parsers
             {
                 _currentPoint.X = args[0];
                 _currentPoint.Y = args[1];
-                _lastSubpath = _currentPoint;
+                _lastSubpathEnd = _currentPoint;
                 double[] lineArgs = new double[args.Length - 2];
                 Array.Copy(args, 2, lineArgs, 0, args.Length - 2);
                 return new SvgLine(lineArgs, _currentPoint, SvgLine.Direction.Both);
             }
-            _lastSubpath = _currentPoint;
+            _lastSubpathEnd = _currentPoint;
             return null;
         }
 
@@ -171,12 +164,12 @@ namespace CNC_CAM.SVG.Parsers
             {
                 _currentPoint.X += args[0];
                 _currentPoint.Y += args[1];
-                _lastSubpath = _currentPoint;
+                _lastSubpathEnd = _currentPoint;
                 double[] lineArgs = new double[args.Length - 2];
                 Array.Copy(args, 2, lineArgs, 0, args.Length - 2);
                 return new SvgLine(lineArgs, _currentPoint, SvgLine.Direction.Both, true);
             }
-            _lastSubpath = _currentPoint;
+            _lastSubpathEnd = _currentPoint;
             return null;
         }
     }

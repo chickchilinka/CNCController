@@ -7,6 +7,11 @@
              mc:Ignorable="d"
              d:DesignHeight="auto" d:DesignWidth="auto">
     <Grid>
+        <Grid.ContextMenu>
+            <ContextMenu>
+            <MenuItem Header="Удалить" Click="Delete_OnClick"></MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>

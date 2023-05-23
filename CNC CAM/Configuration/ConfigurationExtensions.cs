@@ -7,16 +7,16 @@ public static class ConfigurationExtensions
 {
     public static Vector ConvertVectorToPhysical(this CurrentConfiguration currentConfiguration, Vector position)
     {
-        var worksheetConfig = currentConfiguration.GetCurrentConfig<WorksheetConfig>();
-        var controlConfig = currentConfiguration.GetCurrentConfig<CNCControlSettings>();
-        position *= worksheetConfig.PxToMmFactor;
+        var worksheetConfig = currentConfiguration.Get<WorksheetConfig>();
+        var userConfig = currentConfiguration.Get<UserSettings>();
+        position *= worksheetConfig.Scale;
         double x = position.X;
         double y = position.Y;
-        if (controlConfig.InvertY)
+        if (userConfig.InvertY)
         {
             y = worksheetConfig.MaxY - y;
         }
-        if (controlConfig.InvertX)
+        if (userConfig.InvertX)
         {
             x = worksheetConfig.MaxX - x;
         }

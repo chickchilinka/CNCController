@@ -10,7 +10,7 @@ public class MachineInstaller:Installer
     public override void Install(IContainer container)
     {
         container.Register<DummyCncController2D>(Reuse.Singleton);
-        container.Register<SimpleCncSerialController2D>(Reuse.Singleton);
+        container.Register<DrawingHeadController>(Reuse.Singleton);
         container.RegisterSingletonNonLazy<ExportShapesRule>();
     }
 }

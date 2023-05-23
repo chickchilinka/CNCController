@@ -16,13 +16,13 @@
                 <Button x:Name="DoneButton"
                         Height="20"
                         Width="70" Click="DoneButton_OnClick">
-                    Done
+                    Готово
                 </Button>
                 <Button x:Name="CancelButton"
                         Height="20"
                         Width="70"
                         Margin="0 5 0 0" Click="CancelButton_OnClick">
-                    Cancel
+                    Отмена
                 </Button>
             </StackPanel>
         </StackPanel>

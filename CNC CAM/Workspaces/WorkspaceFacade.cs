@@ -1,42 +1,69 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using CNC_CAM.Workspaces.Hierarchy;
 using CNC_CAM.Workspaces.Hierarchy.View;
 using CNC_CAM.Workspaces.View;
 using DryIoc;
+using IContainer = DryIoc.IContainer;
 
 namespace CNC_CAM.Workspaces
 {
-    public class WorkspaceFacade
+    public class WorkspaceFacade:INotifyPropertyChanged
     {
-        public Workspace2D Workspace2D { get; }
-        private WorkspaceElementStorage _workspaceElements;
-        private HierarchyView _hierarchyView;
-        private WorkspaceElement _selectedElement;
+        public WorkspaceView WorkspaceView { get; }
+        public HierarchyView HierarchyView { get; }
 
+        public bool IsNotEmpty { get; private set; }
+
+        private WorkspaceElementStorage _workspaceElements;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public WorkspaceFacade(IContainer container)
         {
-            _hierarchyView = container.Resolve<HierarchyView>();
+            HierarchyView = container.Resolve<HierarchyView>();
             _workspaceElements = container.Resolve<WorkspaceElementStorage>();
-            Workspace2D = container.Resolve<Workspace2D>();
+            WorkspaceView = container.Resolve<WorkspaceView>();
         }
 
         public void Add<TElement>(TElement element) where TElement : WorkspaceElement
         {
             _workspaceElements.Add(element);
-            _hierarchyView.Add(element);
-            Workspace2D.AddElement(element);
+            HierarchyView.Add(element);
+            WorkspaceView.AddElement(element);
+            UpdateIsEmpty();
         }
-        
+
+        public IEnumerable<WorkspaceElement> GetElements()
+        {
+            return _workspaceElements;
+        }
         
         public void Remove<TElement>(TElement element) where TElement : WorkspaceElement
         {
             _workspaceElements.Remove(element);
-            _hierarchyView.Remove(element);
-            Workspace2D.RemoveElement(element);
+            HierarchyView.Remove(element);
+            WorkspaceView.RemoveElement(element);
+            UpdateIsEmpty();
         }
 
+        private void UpdateIsEmpty()
+        {
+            IsNotEmpty = _workspaceElements.Any();
+            OnPropertyChanged(nameof(IsNotEmpty));
+        }
+        
         public void Select(WorkspaceElement element)
         {
-            Workspace2D.Select(element);
+            WorkspaceView.Select(element);
         }
+
+        
     }
 }

@@ -10,6 +10,7 @@
       <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
       <PackageReference Include="DryIoc.dll" Version="5.3.0" />
       <PackageReference Include="Fluent.Ribbon" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.5" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
       <PackageReference Include="System.IO.Ports" Version="5.0.1" />
       <PackageReference Include="System.Management" Version="6.0.0" />
@@ -19,31 +20,57 @@
     <ItemGroup>
       <Folder Include="bin\Debug\net6.0-windows" />
       <Folder Include="RibbonElements" />
-      <Folder Include="UI" />
       <Folder Include="Workspaces\Factory" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="bin\Debug\net6.0-windows\Images\ImportButton_16x.png" />
-      <None Include="bin\Debug\net6.0-windows\Images\RunTest_16x.png" />
-      <None Include="bin\Debug\net6.0-windows\Images\Run_16x.png" />
-      <None Include="bin\Debug\net6.0-windows\Images\Undo_16x.png" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Images\ImportButton_16x.png" />
-      <Resource Include="Images\ImportButton_16x.png" />
       <None Remove="Images\Run_16x.png" />
-      <Resource Include="Images\Run_16x.png" />
       <None Remove="Images\RunTest_16x.png" />
-      <Resource Include="Images\RunTest_16x.png" />
       <None Remove="Images\Undo_16x.png" />
-      <Resource Include="Images\Undo_16x.png" />
+      <None Remove="Images\Settings.png" />
+      <Resource Include="Images\Settings.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Run.png" />
+      <Resource Include="Images\Run.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Open.png" />
+      <Resource Include="Images\Open.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Undo.png" />
+      <Resource Include="Images\Undo.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Info.png" />
+      <Resource Include="Images\Info.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Import.png" />
+      <Resource Include="Images\Import.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Redo.png" />
+      <Resource Include="Images\Redo.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\New.png" />
+      <Resource Include="Images\New.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Images\Save.png" />
+      <Resource Include="Images\Save.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Images\Svg_Icon.png" />
-      <Resource Include="Images\Svg_Icon.png" />
     </ItemGroup>
 
     <ItemGroup>

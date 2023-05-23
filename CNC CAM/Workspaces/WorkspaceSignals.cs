@@ -13,4 +13,13 @@ public class WorkspaceSignals
             Element = element;
         }
     }
+    public class DeleteElement
+    {
+        public WorkspaceElement Element { get; }
+
+        public DeleteElement(WorkspaceElement element)
+        {
+            Element = element;
+        }
+    }
 }

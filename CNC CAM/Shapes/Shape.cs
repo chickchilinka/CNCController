@@ -3,7 +3,6 @@ using System.Windows.Media;
 using CNC_CAM.Configuration;
 using WPFShape = System.Windows.Shapes.Shape;
 using CNC_CAM.Tools;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Machine.GCode;
 using Transform = CNC_CAM.SVG.Subpaths.Transform;
 

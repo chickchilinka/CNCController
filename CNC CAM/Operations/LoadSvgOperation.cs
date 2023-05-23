@@ -12,11 +12,12 @@ using CNC_CAM.Workspaces.Hierarchy;
 
 namespace CNC_CAM.Operations
 {
-    public class LoadSvgOperation:Operation
+    public class LoadSvgOperation:Operation, IRevokable
     {
         private bool _canceled;
         private readonly WorkspaceFacade _currentWorkspaceFacade;
-        private List<SvgWorkspaceElement> _roots = new List<SvgWorkspaceElement>();
+        private List<SvgWorkspaceElement> _roots = new();
+        private string _filepath;
         public LoadSvgOperation(WorkspaceFacade workspaceFacade) : base("Load SVG")
         {
             _currentWorkspaceFacade = workspaceFacade;
@@ -27,16 +28,19 @@ namespace CNC_CAM.Operations
             var openFileDialog = new OpenFileDialog
             {
                 InitialDirectory = "c:\\",
-                Filter = "Scalable vector graphics (*.svg)|*.svg|All files (*.*)|*.*",
+                Filter = "Изображение в формате SVG (*.svg)|*.svg|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true
             };
             if (openFileDialog.ShowDialog()==true)
             {
-                var filePath = openFileDialog.FileName;
-                Name += $" {filePath}";
-                XmlReader reader = XmlReader.Create(filePath, new XmlReaderSettings(){DtdProcessing = DtdProcessing.Parse});
-                AddSvgShape(filePath, reader);
+                _filepath = openFileDialog.FileName;
+                Name += $" {_filepath}";
+                if(!File.Exists(_filepath))
+                    return;
+                XmlReader reader = XmlReader.Create(_filepath, new XmlReaderSettings(){DtdProcessing = DtdProcessing.Parse});
+                AddSvgShape(_filepath, reader);
+                Redo();
             }
             else
             {
@@ -55,11 +59,10 @@ namespace CNC_CAM.Operations
                 var workspaceElement =
                     new SvgWorkspaceElement(path.Substring(indexOfLastSlash, path.Length-indexOfLastSlash), path, svgRoot);
                 _roots.Add(workspaceElement);
-                _currentWorkspaceFacade.Add(workspaceElement);
             }
         }
 
-        public override void Undo()
+        public void Undo()
         {
             if (!_canceled)
             {
@@ -69,7 +72,15 @@ namespace CNC_CAM.Operations
                     _currentWorkspaceFacade.Remove(element);
                 }
             }
-            _roots.Clear();
+        }
+
+        public void Redo()
+        {
+            _canceled = false;
+            foreach (var root in _roots)
+            {
+                _currentWorkspaceFacade.Add(root);   
+            }
         }
     }
 }

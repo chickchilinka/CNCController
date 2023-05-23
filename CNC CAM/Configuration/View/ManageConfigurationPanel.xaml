@@ -1,0 +1,41 @@
+<UserControl x:Class="CNC_CAM.Configuration.View.ManageConfigurationPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:CNC_CAM.Configuration.View"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="600">
+ <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"> </ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Margin="10">
+            <StackPanel Orientation="Vertical">
+                <DataGrid HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" x:Name="Table"
+                          IsReadOnly="True"
+                          SelectionMode="Single" SelectionChanged="Table_OnSelectionChanged"
+                          DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                          ItemsSource="{Binding Path=Configs}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Название" Binding="{Binding Path=Config.Name}" Width="*"/>
+                    <DataGridTextColumn Header="Последнее изменение" Binding="{Binding Path=Config.LastModified}" Width="*"/>
+                    <DataGridTextColumn Header="Создано" Binding="{Binding Path=Config.Created}" Width="*"/>
+                    <DataGridCheckBoxColumn x:Name="IsUsed" Header="" Binding="{Binding Path=IsCurrent}" Width="40"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            </StackPanel>
+        </ScrollViewer>
+        <StackPanel Grid.Column="1" Width="Auto" HorizontalAlignment="Right" Orientation="Vertical" Margin="5">
+            <Button x:Name = "UseButton" Margin="0 5 0 0" Click="UseButton_OnClick">Установить</Button>
+            <Button x:Name = "EditButton" Margin="0 5 0 0" Click="EditButton_OnClick">Редактировать</Button>
+            <Button x:Name = "DuplicateButton" Margin="0 5 0 0" Click="DuplicateButton_OnClick">Копировать</Button>
+            <Button x:Name = "DeleteButton" Margin="0 5 0 0" Click="DeleteButton_OnClick">Удалить</Button>
+            <Button x:Name = "ImportButton" Margin="0 25 0 0" Click="ImportButton_OnClick">Импорт...</Button>
+            <Button x:Name = "ExportButton" Margin="0 5 0 0" Click="ExportButton_OnClick">Экспорт...</Button>
+            <Button x:Name = "MasterButton" Margin="0 50 0 0" Click="MasterButton_OnClick">Мастер настроек</Button>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

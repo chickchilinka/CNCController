@@ -2,9 +2,19 @@ using System.ComponentModel;
 
 namespace CNC_CAM.UI.CustomWPFElements
 {
-    public class GenericField<T>:LabeledField 
+    public interface IGenericField
     {
-        public T FloatValue
+        public object GenericValueObject { get; }
+        public string FieldName { get; }
+    }
+    public interface IGenericField<out T>:IGenericField
+    {
+        public T GenericValue { get; }
+        
+    }
+    public class GenericField<T>:LabeledField, IGenericField<T>
+    {
+        public T GenericValue
         {
             get
             {
@@ -16,6 +26,8 @@ namespace CNC_CAM.UI.CustomWPFElements
                 }
                 return default(T);
             } 
-        } 
+        }
+
+        public object GenericValueObject => GenericValue;
     }
 }

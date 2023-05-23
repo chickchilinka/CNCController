@@ -1,3 +1,4 @@
+using System;
 using CNC_CAM.SVG.Elements;
 using CNC_CAM.Workspaces.Hierarchy;
 using DryIoc;
@@ -12,9 +13,9 @@ public class WorkspaceElementViewFactory
         _container = container;
     }
 
-    public IWorkspaceElementView<TElement> Create<TElement>(TElement element) where TElement : WorkspaceElement
+    public IWorkspaceElementView Create<TElement>(TElement element) where TElement : WorkspaceElement
     {
-        var view = _container.Resolve<IWorkspaceElementView<TElement>>();
+        var view = _container.Resolve<IWorkspaceElementView>(serviceKey:element.GetType());
         view.Initialize(element);
         return view;
     }

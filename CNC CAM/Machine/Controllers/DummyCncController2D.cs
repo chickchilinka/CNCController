@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using CNC_CAM.Machine.GCode;
 using CNC_CAM.Tools;
+using Microsoft.Win32;
 
 namespace CNC_CAM.Machine.Controllers
 {
@@ -13,17 +16,26 @@ namespace CNC_CAM.Machine.Controllers
 
         public override void ExecuteGCodeCommands(IEnumerable<GCodeCommand> commands)
         {
-            Thread thread = new Thread(() =>
+            StringBuilder builder = new StringBuilder();
+            foreach (var command in commands)
             {
-                _logger.Log("Executing:");
-                foreach (var subCommand in commands.SelectMany(command => command))
+                foreach (var subcommand in command)
                 {
-                    Thread.Sleep(10);
-                    Console.WriteLine(subCommand);
+                    builder.AppendLine(subcommand);
                 }
-                _logger.Log("End of commands execution");
-            });
-            thread.Start(); 
+            }
+
+            var dialog = new SaveFileDialog()
+            {
+                InitialDirectory = "c:\\",
+                Filter = "Файл формата GCODE (*.gcode)|*.gcode|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+            var shown = dialog.ShowDialog();
+            if(!shown ?? false)
+                return;
+            File.WriteAllText(dialog.FileName, builder.ToString());
         }
         public override void Stop()
         {

@@ -77,7 +77,7 @@ public static class TransfomationMatrixParser
 
     public static double[] GetCommandArguments(this string command)
     {
-        var tokens = Regex.Matches(command, Const.RegexPatterns.DecimalsSearchMatcher)
+        var tokens = Regex.Matches(command, RegexPatterns.DecimalsSearchMatcher)
             .Where(t => !string.IsNullOrEmpty(t.Value)).ToArray();
         var args = new double[tokens.Length];
         for (int i = 0; i < tokens.Length; i++)

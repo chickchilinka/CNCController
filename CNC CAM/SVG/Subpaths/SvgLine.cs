@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 
 namespace CNC_CAM.SVG.Subpaths
 {
@@ -75,7 +74,7 @@ namespace CNC_CAM.SVG.Subpaths
             return (1 - point) * StartPoint + point * _endPoint;
         }
 
-        public override List<Vector> Linearize(AccuracySettings accuracy)
+        public override List<Vector> Linearize(double accuracy)
         {
             var result = new List<Vector> { ToGlobalPoint(_endPoint) };
             if (continuation == null) return result;

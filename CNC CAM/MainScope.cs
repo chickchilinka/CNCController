@@ -1,6 +1,7 @@
 using System.Linq;
 using CNC_CAM.Base;
 using CNC_CAM.Configuration;
+using CNC_CAM.Data;
 using CNC_CAM.Machine;
 using CNC_CAM.Operations;
 using CNC_CAM.Tools.Serialization;
@@ -23,7 +24,8 @@ public class MainScope:Scope
         _container.Register<SerializationService>(Reuse.Singleton);
         _container.Register<SignalBus>(Reuse.Singleton);
         _container.Register<WorkspaceFacade>(Reuse.Singleton);
-        _container.Register<OperationsHistory>(Reuse.Singleton);
+        _container.Register<OperationsController>(Reuse.Singleton);
+        _container.RegisterSingletonNonLazy<DBService>();
         new ConfigurationInstaller().Install(Container);
         new WorkspaceInstaller().Install(Container);
         new MachineInstaller().Install(Container);

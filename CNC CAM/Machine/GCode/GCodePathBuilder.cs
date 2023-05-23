@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using CNC_CAM.Configuration;
 using CNC_CAM.Configuration.Data;
-using CNC_CAM.Machine.Configs;
 using CNC_CAM.Shapes;
 using CNC_CAM.SVG.Elements;
 
@@ -35,7 +34,7 @@ namespace CNC_CAM.Machine.GCode
                         .SetFastTravel(true)
                         .Build());
                 }
-                foreach (var point in curve.Linearize(_currentConfiguration.GetCurrentConfig<AccuracySettings>()))
+                foreach (var point in curve.Linearize(_currentConfiguration.Get<UserSettings>().Accuracy))
                 {
                     commands.AddRange(WithAbsoluteMove(_currentConfiguration, point)
                         .SetFastTravel(false)

@@ -6,8 +6,9 @@
                      xmlns:fluent="urn:fluent-ribbon"
                      xmlns:custom="clr-namespace:CNC_CAM.UI.CustomWPFElements"
                      xmlns:view="clr-namespace:CNC_CAM.Workspaces.Hierarchy.View"
+                     xmlns:tools="clr-namespace:CNC_CAM.Tools"
                      mc:Ignorable="d"
-                     Title="MainWindow" WindowState="Maximized" Height="450" Width="800">
+                     Title="SVG в G-Code" WindowState="Maximized" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -18,75 +19,80 @@
             <fluent:Ribbon.QuickAccessItems>
             </fluent:Ribbon.QuickAccessItems>
             <fluent:RibbonTabItem Padding="10 0 10 0" Background="RoyalBlue" Foreground="White" x:Name="File"
-                                  Header="File">
-                <fluent:RibbonGroupBox Header="Project">
+                                  Header="Проект">
+                <fluent:RibbonGroupBox Header="Проект">
                     <fluent:Button x:Name="OpenProject"
-                                   Header="Open" />
+                                   Icon="/CNC CAM;component/Images/Open.png"
+                                   Header="Открыть" />
                     <fluent:Button x:Name="CreateProject"
-                                   Header="Create" />
+                                   Icon="/CNC CAM;component/Images/New.png"
+                                   Header="Создать" />
                     <fluent:Button x:Name="SaveProject"
-                                   Header="Save" />
+                                   Icon="/CNC CAM;component/Images/Save.png"
+                                   Header="Сохранить" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="MainTab" Header="Main">
-                <fluent:RibbonGroupBox Header="Operations">
+            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="MainTab" Header="Главная">
+                <fluent:RibbonGroupBox Header="Операции">
                     <fluent:Button x:Name="Undo"
-                                   Header="Undo"
-                                   Icon="/CNC CAM;component/Images/Undo_16x.png"
+                                   Header="Отменить"
+                                   Icon="/CNC CAM;component/Images/Undo.png"
+                                   IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=OperationsController.CanUndo}"
                                    Click="Undo_OnClick" />
+                    <fluent:Button x:Name="Redo"
+                                   Header="Выполнить"
+                                   Icon="/CNC CAM;component/Images/Redo.png"
+                                   IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=OperationsController.CanRedo}"
+                                   Click="Redo_OnClick" />
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox x:Name="Import" Header="Import">
+                <fluent:RibbonGroupBox x:Name="Import" Header="Импорт" Width="70"  HorizontalAlignment="Stretch">
                     <fluent:Button x:Name="ImportSvg"
                                    Header="SVG"
-                                   Icon="/CNC CAM;component/Images/ImportButton_16x.png"
+                                   Width="62"
+                                   Icon="/CNC CAM;component/Images/Import.png"
                                    Click="ImportSvg_OnClick" />
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox Header="Safety Area">
-                    <custom:LabeledField FieldName="Width"  NumericOnly="True" x:Name="SafeAreaWidth"></custom:LabeledField>
-                    <custom:LabeledField FieldName="Height" NumericOnly="True" x:Name="SafeAreaHeight"></custom:LabeledField>
-                </fluent:RibbonGroupBox>
-            </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="MachineTab" Header="Machine">
-                <fluent:RibbonGroupBox x:Name="Start" Header="Send to machine">
+                <fluent:RibbonGroupBox x:Name="Start" Header="Выполнить">
                     <fluent:Button x:Name="StartDraw"
-                                   Header="Test draw"
-                                   Icon="/CNC CAM;component/Images/RunTest_16x.png"
+                                   Header="Вывести на станок"
+                                   IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WorkspaceFacade.IsNotEmpty}"
+                                   Icon="/CNC CAM;component/Images/Run.png"
                                    Click="StartDummyDraw_Click" />
-                    <fluent:Button x:Name="StartCncDraw"
-                                   Header="Start CNC draw"
-                                   Icon="/CNC CAM;component/Images/Run_16x.png"
-                                   Click="StartCncDraw_Click" />
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox x:Name="Config" Header="Configure">
-                    <fluent:Button x:Name="Configure"
-                                   Header="Configure machine"
-                                   Click="Configure_OnClick" />
+                <fluent:RibbonGroupBox x:Name="SettingsGroup" Header="Настройки">
+                    <fluent:Button x:Name="Settings"
+                                   Header="Настройки"
+                                   Icon="/CNC CAM;component/Images/Settings.png"
+                                   Click="Settings_OnClick" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="HelpTab" Header="Help">
+            <fluent:RibbonTabItem Padding="10 0 10 0" x:Name="HelpTab" Header="Справка">
                 <fluent:RibbonGroupBox>
                     <fluent:Button x:Name="AboutBtn"
-                                   Header="About" />
+                                   Icon="/CNC CAM;component/Images/Info.png"
+                                   Header="О программе" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 
         </fluent:Ribbon>
-        <DockPanel Grid.Row="1" Dock="Left">
-            <StackPanel x:Name = "HierarchyStackPanel" DockPanel.Dock="Left" Width="250px">
-            </StackPanel>
+        <DockPanel Grid.Row="1" Dock="Left" VerticalAlignment="Stretch">
+            <Grid x:Name = "HierarchyStackPanel" DockPanel.Dock="Left" Width="250px" VerticalAlignment="Stretch">
+            </Grid>
             <ScrollViewer x:Name="WorkspaceScrollView" PanningMode="Both" Grid.Row="1">
             </ScrollViewer>
         </DockPanel>
         <fluent:StatusBar Grid.Row="2">
-            <fluent:StatusBarItem HorizontalAlignment="Right">
-                <fluent:TextBox
-                    x:Name="MousePositionText">
-                </fluent:TextBox>
+            <fluent:StatusBarItem HorizontalAlignment="Left">
+                <Label
+                    x:Name="MousePositionText" Foreground="White">
+                </Label>
             </fluent:StatusBarItem>
             <fluent:StatusBarItem HorizontalAlignment="Right">
-                <fluent:TextBox
+                <custom:ConfigurationTextbox
+                    Foreground="White"
+                    LabelFormatter = "GetWorksheetInfo"
                     x:Name="GridSize" MouseDoubleClick="GridSize_OnMouseDoubleClick">
-                </fluent:TextBox>
+                </custom:ConfigurationTextbox>
             </fluent:StatusBarItem>
         </fluent:StatusBar>
     </Grid>

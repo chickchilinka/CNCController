@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using CNC_CAM.Base;
 using CNC_CAM.Configuration.Attributes;
-using CNC_CAM.Configuration.Data;
 using CNC_CAM.UI.DrawShapeWindows;
 using DryIoc;
 
@@ -22,7 +20,7 @@ public class EditConfigRule:AbstractSignalRule<ConfigurationSignals.EditConfig>
     protected override void OnSignalFired(ConfigurationSignals.EditConfig signal)
     {
         var properties = signal.Config.GetType().GetProperties();
-
+        
         Dictionary<string, PropertyInfo> propertyInfos = new Dictionary<string, PropertyInfo>();
         var builder = GenericWindowWithFieldsBuilder.Create(OnSubmitLocal, OnCancel);
         builder.WithTitle(nameof(signal.Config));
@@ -43,15 +41,19 @@ public class EditConfigRule:AbstractSignalRule<ConfigurationSignals.EditConfig>
                 builder.AddStringField(propertyAttribute?.Name,
                     defaultValue: Convert.ToString(property.GetValue(signal.Config)),
                     tooltipContent: propertyAttribute.Description);
+            if(property.PropertyType == typeof(int))
+                builder.AddSimpleIntField(propertyAttribute?.Name,
+                    defaultValue: Convert.ToSingle(property.GetValue(signal.Config)),
+                    tooltipContent: propertyAttribute.Description);
             if(property.PropertyType == typeof(bool))
                 builder.AddBoolField(propertyAttribute?.Name,
                     defaultValue: Convert.ToBoolean(property.GetValue(signal.Config)),
                     tooltipContent: propertyAttribute.Description);
-
+        
         }
-
+        
         var window = builder.Build();
-        window.Show();
+        window.ShowDialog();
         
         void OnSubmitLocal(Dictionary<string, object> values)
         {
